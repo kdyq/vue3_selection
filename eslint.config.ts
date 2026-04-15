@@ -39,6 +39,14 @@ export default defineConfig([
         },
       ],
       'vue/singleline-html-element-content-newline': 'off',
+      'vue/html-self-closing': [
+        'error',
+        {
+          svg: {
+            use: 'never',
+          },
+        },
+      ],
     },
   },
   {

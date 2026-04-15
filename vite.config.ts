@@ -5,6 +5,9 @@ import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+//引入svg需要的插件
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,6 +19,12 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver()], // 自动导入 Element Plus 组件
+    }),
+    createSvgIconsPlugin({
+      // Specify the icon folder to be cached
+      iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
+      // Specify symbolId format
+      symbolId: 'icon-[dir]-[name]',
     }),
   ],
   server: {
