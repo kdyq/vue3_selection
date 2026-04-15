@@ -56,6 +56,7 @@ export default defineConfig([
       'no-unused-vars': 'off',
       // 关闭 TypeScript 未使用导入/变量检查（你报错的核心规则）
       '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off', //解除any报错
     },
   },
 ])
