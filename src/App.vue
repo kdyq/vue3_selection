@@ -8,3 +8,8 @@
     <SvgIcon name="address" color="pink" width="32px" height="32px"></SvgIcon>
   </div>
 </template>
+<style scoped lang="scss">
+div{
+  color:$color
+}
+</style>

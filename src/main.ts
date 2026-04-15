@@ -14,5 +14,7 @@ import 'virtual:svg-icons-register'
 //引入自定义插件对象：注册全局组件
 import globalComponents from '@/components/index'
 app.use(globalComponents)
+//引入全局样式
+import '@/style/index.scss'
 app.mount('#app')
 // console.log(import.meta.env);
