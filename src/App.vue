@@ -1,23 +1,9 @@
-<script setup lang="ts">
-import { onMounted } from 'vue';
-import request from './utils/request';
-onMounted(() => {
-  request({
-    url: '/user/login',
-    method: 'post',
-    data: {
-      username: 'admin',
-      password: '111111'
-    }
-  }).then(res => {
-    console.log(res);
-  })
-})
-</script>
-
 <template>
   <div>
-    <h1>axios二次封装测试</h1>
+    <router-view></router-view>
   </div>
 </template>
+
+<script setup lang="ts">
+</script>
 <style scoped lang="scss"></style>

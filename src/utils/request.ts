@@ -3,7 +3,7 @@ import axios from 'axios'
 import {ElMessage} from 'element-plus'
 //创建axios实例
 const request = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API,
+  baseURL: import.meta.env.VITE_SERVE,
   timeout: 5000, //超时时间
 })
 //请求拦截器
