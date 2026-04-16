@@ -3,15 +3,15 @@
         <el-row>
             <el-col :span="12" :xs="0"></el-col>
             <el-col :span="12" :xs="24" class="right_panel">
-                <el-form class="login_form">
+                <el-form class="login_form" :model="LoginForm" :rules="rules" ref="loginForms">
                     <h1>Hello</h1>
                     <h2>欢迎来到硅谷甄选</h2>
 
-                    <el-form-item>
+                    <el-form-item prop="username">
                         <el-input :prefix-icon="User" placeholder="请输入用户名" v-model="LoginForm.username" />
                     </el-form-item>
 
-                    <el-form-item>
+                    <el-form-item prop="password">
                         <el-input type="password" :prefix-icon="Lock" placeholder="请输入密码" v-model="LoginForm.password"
                             show-password />
                     </el-form-item>
@@ -35,13 +35,17 @@ import { useRouter } from 'vue-router';
 import { ElNotification } from 'element-plus';
 //获取时间
 import { getTime } from '@/utils/time';
+import type { FormItemRule } from 'element-plus'
+import { lo } from 'element-plus/es/locale/index.mjs';
 const userStore = useUserStore();
 const router = useRouter()
 //收集表单数据
 let LoginForm = reactive({ username: 'admin', password: '111111' })
 let loading = ref(false)
+let loginForms = ref()
 //登录回调
 const login = async () => {
+    await loginForms.value.validate();
     //设置加载
     loading.value = true
     try {
@@ -57,6 +61,40 @@ const login = async () => {
     } catch {
         loading.value = false
     }
+}
+//定义表单验证的配置对象
+const rules = {
+    username: [
+        { required: true, message: '请输入用户名', trigger: 'change' },
+        { min: 5, max: 16, message: '用户名长度为5-16位', trigger: 'change' },
+        {
+            validator(rule: FormItemRule, value: string, callback: Function) {
+                // 任何空格都不允许
+                if (value.includes(' ')) {
+                    callback(new Error('用户名不能包含空格'))
+                } else {
+                    callback()
+                }
+            },
+            trigger: 'change'
+        }
+    ] as FormItemRule[],
+
+    // 密码：6-16位 + 不能有任何空格
+    password: [
+        { required: true, message: '请输入密码', trigger: 'change' },
+        { min: 6, max: 16, message: '密码长度为6-16位', trigger: 'change' },
+        {
+            validator(rule: FormItemRule, value: string, callback: Function) {
+                if (value.includes(' ')) {
+                    callback(new Error('密码不能包含空格'))
+                } else {
+                    callback()
+                }
+            },
+            trigger: 'change'
+        }
+    ] as FormItemRule[]
 }
 </script>
 

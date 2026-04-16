@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import type { loginFormData, loginResponseData } from '@/api/user/type'
 import { reqLogin } from '@/api/user'
 import { ref } from 'vue'
-import type { UserState } from './types/type'
 export const useUserStore = defineStore(
   'User',
   () => {
