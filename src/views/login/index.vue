@@ -33,6 +33,8 @@ import { reactive, ref } from 'vue';
 import { useUserStore } from '@/store/modules/user';
 import { useRouter } from 'vue-router';
 import { ElNotification } from 'element-plus';
+//获取时间
+import { getTime } from '@/utils/time';
 const userStore = useUserStore();
 const router = useRouter()
 //收集表单数据
@@ -48,7 +50,8 @@ const login = async () => {
         router.replace('/')
         ElNotification({
             type: 'success',
-            message: '登录成功'
+            message: '欢迎回来',
+            title: `Hi，${getTime()}好`
         })
         loading.value = false
     } catch {
