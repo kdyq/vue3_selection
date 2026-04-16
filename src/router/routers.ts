@@ -9,8 +9,8 @@ export const constantRoute = [
   {
     //首页
     path: '/',
-    component: () => import('@/views/home/index.vue'),
-    name: 'layput',
+    component: () => import('@/views/layout/index.vue'),
+    name: 'layout',
   },
   {
     //404页
