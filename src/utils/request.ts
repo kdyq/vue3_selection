@@ -1,9 +1,9 @@
 //进行axios二次封装，使用请求拦截器和响应拦截器
 import axios from 'axios'
-import {ElMessage} from 'element-plus'
+import { ElMessage } from 'element-plus'
 //创建axios实例
 const request = axios.create({
-  baseURL: import.meta.env.VITE_SERVE,
+  baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 5000, //超时时间
 })
 //请求拦截器
@@ -34,7 +34,6 @@ request.interceptors.response.use(
     */
     const code = response.data.code
     if (code !== 200) {
-      console.log(response);
       // 提示错误信息
       ElMessage({
         type: 'error',
@@ -51,4 +50,4 @@ request.interceptors.response.use(
     // 失败回调：处理http网络错误
   },
 )
-export default request;
+export default request
