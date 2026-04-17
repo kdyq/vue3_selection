@@ -2,7 +2,7 @@
 <template>
     <template v-for="item in menuList" :key="item.path">
         <!-- 没有子路由 -->
-        <el-menu-item v-if="!item.children && !item.meta.hidden" :index="item.path">
+        <el-menu-item v-if="!item.children && !item.meta.hidden" :index="item.path" @click="goRoute">
             <template #title>
                 <el-icon>
                     <component :is="item.meta.icon"></component>
@@ -12,7 +12,7 @@
         </el-menu-item>
         <!-- 有但只有一个 -->
         <el-menu-item v-if="item.children && item.children.length == 1 && !item.children[0].meta.hidden"
-            :index="item.children[0].path">
+            :index="item.children[0].path" @click="goRoute">
             <template #title>
                 <el-icon>
                     <component :is="item.children[0].meta.icon"></component>
@@ -35,7 +35,13 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 defineProps(['menuList'])
+const router = useRouter();
+const goRoute = (vc: any) => {
+    router.push(vc.index)
+    // console.log(vc.index);
+}
 </script>
 <script lang="ts">
 export default {

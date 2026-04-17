@@ -15,7 +15,7 @@
         <div class="layout_tabbar">234</div>
         <!-- 右侧内容 -->
         <div class="layout_main">
-            <p style="height: 5000px; background-color: red;">我是p标签</p>
+            <Main></Main>
         </div>
     </div>
 </template>
@@ -24,6 +24,7 @@
 import logo from '@/views/layout/logo/index.vue'
 import Menu from '@/views/layout/menu/index.vue'
 import { useUserStore } from '@/store/modules/user';
+import Main from '@/views/layout/main/index.vue'
 const userStore = useUserStore();
 </script>
 
