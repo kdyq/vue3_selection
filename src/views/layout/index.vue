@@ -5,14 +5,17 @@
             <logo></logo>
             <!-- 展示菜单 -->
             <el-scrollbar class="scrollbar">
-                <el-menu background-color="#001529" text-color="white">
+                <el-menu :default-active="route.path" active-text-color="skyblue" background-color="#001529"
+                    text-color="white">
                     <!-- 动态生成导航菜单 -->
                     <Menu :menuList="userStore.menuRoute"></Menu>
                 </el-menu>
             </el-scrollbar>
         </div>
         <!-- 顶部导航 -->
-        <div class="layout_tabbar">234</div>
+        <div class="layout_tabbar">
+            <Tabbar></Tabbar>
+        </div>
         <!-- 右侧内容 -->
         <div class="layout_main">
             <Main></Main>
@@ -25,14 +28,17 @@ import logo from '@/views/layout/logo/index.vue'
 import Menu from '@/views/layout/menu/index.vue'
 import { useUserStore } from '@/store/modules/user';
 import Main from '@/views/layout/main/index.vue'
+import { useRoute } from 'vue-router';
+import Tabbar from '@/views/layout/tabbar/index.vue'
 const userStore = useUserStore();
+const route = useRoute();
 </script>
 
 <style scoped lang="scss">
 .layout_container {
     width: 100%;
     height: 100vh;
-    color: white;
+    // color: white;
 
     .layout_slider {
         width: $base-menu-width;
@@ -51,7 +57,7 @@ const userStore = useUserStore();
         left: $base-menu-width;
         width: calc(100% - $base-menu-width);
         height: $base-tubbar-height;
-        background-color: skyblue;
+        // background-color: skyblue;
     }
 
     .layout_main {
