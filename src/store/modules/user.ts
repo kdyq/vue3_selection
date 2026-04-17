@@ -3,10 +3,13 @@ import { defineStore } from 'pinia'
 import type { loginFormData, loginResponseData } from '@/api/user/type'
 import { reqLogin } from '@/api/user'
 import { ref } from 'vue'
+import { constantRoute } from '@/router/routers'
+import type { UserState } from './types/type'
 export const useUserStore = defineStore(
   'User',
-  () => {
-    const token = ref<string>('')
+  (): UserState => {
+    const token = ref('')
+    const menuRoute = ref(constantRoute) //存储生成菜单
     const userLogin = async (data: loginFormData) => {
       const result: loginResponseData = await reqLogin(data)
       // console.log(result);
@@ -14,10 +17,10 @@ export const useUserStore = defineStore(
         token.value = result.data.token as string
         return 'ok'
       } else {
-        return Promise.reject(new Error(result.data.message))
+        throw new Error(result.data.message)
       }
     }
-    return { userLogin, token }
+    return { userLogin, token, menuRoute }
     //持久化存储
   },
   {

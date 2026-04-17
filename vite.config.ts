@@ -20,9 +20,6 @@ export default defineConfig(({ command }) => {
       AutoImport({
         resolvers: [ElementPlusResolver()], // 自动导入 Element Plus API
       }),
-      Components({
-        resolvers: [ElementPlusResolver()], // 自动导入 Element Plus 组件
-      }),
       createSvgIconsPlugin({
         // Specify the icon folder to be cached
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
@@ -30,7 +27,7 @@ export default defineConfig(({ command }) => {
         symbolId: 'icon-[dir]-[name]',
       }),
       viteMockServe({
-        enable: command === 'serve',//mock配置
+        enable: command === 'serve', //mock配置
       }),
     ],
     server: {
