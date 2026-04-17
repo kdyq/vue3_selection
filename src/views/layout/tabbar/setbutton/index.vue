@@ -20,7 +20,7 @@
     </el-dropdown>
 </template>
 
-<script setup>
+<script setup lang="ts" name="setbutton">
 
 </script>
 

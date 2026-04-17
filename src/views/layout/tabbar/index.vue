@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="tabbar">
 import Setbutton from "./setbutton/index.vue";
 import Breadcrumb from "./breadcrumb/index.vue";
 </script>
