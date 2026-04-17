@@ -20,7 +20,7 @@ export const constantRoute: RouteRecordRaw[] = [
     name: 'Layout',
     redirect: '/home',
     meta: {
-      title: 'layout',
+      title: '',
       hidden: false,
       icon: 'HomeFilled',
     },
@@ -58,6 +58,7 @@ export const constantRoute: RouteRecordRaw[] = [
       hidden: false,
       icon: 'Lock',
     },
+    redirect: '/acl/user',
     children: [
       //用户管理
       {
