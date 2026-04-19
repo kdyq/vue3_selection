@@ -1,7 +1,11 @@
 //用户相关信息的仓库
 import { defineStore } from 'pinia'
-import type { loginFormData, loginResponseData } from '@/api/user/type'
-import { reqLogin } from '@/api/user'
+import type {
+  loginFormData,
+  loginResponseData,
+  userInfoResponseData,
+} from '@/api/user/type'
+import { reqLogin, reqUserInfo } from '@/api/user'
 import { ref } from 'vue'
 import { constantRoute } from '@/router/routers'
 import type { UserState } from './types/type'
@@ -10,6 +14,7 @@ export const useUserStore = defineStore(
   (): UserState => {
     const token = ref('')
     const menuRoute = ref(constantRoute) //存储生成菜单
+    //登录
     const userLogin = async (data: loginFormData) => {
       const result: loginResponseData = await reqLogin(data)
       // console.log(result);
@@ -20,9 +25,22 @@ export const useUserStore = defineStore(
         throw new Error(result.data.message)
       }
     }
-    return { userLogin, token, menuRoute }
-    //持久化存储
+    const username = ref('')
+    const avatar = ref('')
+    //获取用户信息
+    const userInfo = async () => {
+      const result: any = await reqUserInfo()
+      if (result.code == 200) {
+        username.value = result.data.checkUser.username
+        avatar.value = result.data.checkUser.avatar
+        console.log(username)
+        console.log(avatar)
+      }
+      return result
+    }
+    return { userLogin, userInfo, token, menuRoute, username, avatar }
   },
+  //持久化存储
   {
     persist: {
       key: 'token',
