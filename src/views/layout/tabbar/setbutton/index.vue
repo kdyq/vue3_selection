@@ -4,12 +4,12 @@
         <el-button size="default" icon="Refresh" circle @click="changeRefresh"></el-button>
     </el-tooltip>
     <el-tooltip content="全屏" placement="bottom">
-        <el-button size="default" icon="FullScreen" circle></el-button>
+        <el-button size="default" icon="FullScreen" circle @click="fullScreen"></el-button>
     </el-tooltip>
     <el-tooltip content="设置" placement="bottom">
         <el-button size="default" icon="Setting" circle></el-button>
     </el-tooltip>
-    <img src="/logo.png" style="width: 32px; height: 32px; margin: 0 10px;">
+    <img src="/touxiang.png" style="width: 32px; height: 32px; margin: 0 10px; border-radius: 50%;">
     <!-- 下拉菜单 -->
     <el-dropdown>
         <span class="el-dropdown-link">
@@ -29,9 +29,22 @@
 <script setup lang="ts" name="setbutton">
 import { useLayoutStore } from '@/store/modules/layout';
 const layoutStore = useLayoutStore();
+// 刷新
 const changeRefresh = () => {
     layoutStore.refresh = !layoutStore.refresh;
 };
+//全屏实现
+const fullScreen = () => {
+    //document的一个属性，可以判断当前是否是全屏
+    const full = document.fullscreenElement;
+    //切换为全屏
+    if (!full) {
+        document.documentElement.requestFullscreen();
+    } else {
+        //取消全屏
+        document.exitFullscreen();
+    }
+}
 </script>
 
 <style lang="scss" scoped></style>
