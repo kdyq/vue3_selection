@@ -6,7 +6,7 @@
     </router-view>
 </template>
 
-<script setup lang="ts" name="main">
+<script setup lang="ts" name="mainPage">
 import { ref, watch, nextTick } from 'vue';
 import { useLayoutStore } from '@/store/modules/layout';
 const layoutStore = useLayoutStore();
