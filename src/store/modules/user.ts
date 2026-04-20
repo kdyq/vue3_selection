@@ -33,12 +33,30 @@ export const useUserStore = defineStore(
       if (result.code == 200) {
         username.value = result.data.checkUser.username
         avatar.value = result.data.checkUser.avatar
-        console.log(username)
-        console.log(avatar)
       }
       return result
     }
-    return { userLogin, userInfo, token, menuRoute, username, avatar }
+    //清空登录信息
+    const userLogout = () => {
+      // 清空所有状态
+      token.value = ''
+      username.value = ''
+      avatar.value = ''
+      // 重置菜单
+      menuRoute.value = constantRoute
+      // 清空本地存储
+      localStorage.removeItem('token')
+      return 'ok'
+    }
+    return {
+      userLogin,
+      userInfo,
+      userLogout,
+      token,
+      menuRoute,
+      username,
+      avatar,
+    }
   },
   //持久化存储
   {
