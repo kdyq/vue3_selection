@@ -14,6 +14,7 @@ enum API {
 }
 
 // 登录接口
+//请求方法类型解释：第一个直接写any，是给 Axios 底层用的。第二个是真实的接口返回的类型，需根据实际进行定义。
 export const reqLogin = (data: loginFormData) =>
   request.post<any, loginResponseData>(API.LOGIN_URL, data)
 // 获取用户信息

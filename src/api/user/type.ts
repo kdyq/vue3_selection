@@ -5,7 +5,7 @@ export interface loginFormData {
   username: string
   password: string
 }
-// 定义全部接口返回数据都拥有 ts 类型
+// 定义全部接口返回数据都拥有的ts 类型
 export interface ResponseData {
   code: number
   ok: boolean
