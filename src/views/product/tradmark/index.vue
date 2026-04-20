@@ -46,7 +46,7 @@ const pageSize = ref<number>(3)
 //品牌总数
 const total = ref<number>(0)
 //存储已有品牌的数据
-const trademarkArr = ref<any>([])
+const trademarkArr = ref<Records>([])
 
 //封装获取品牌列表数据的方法
 const getTrademarkList = async () => {
