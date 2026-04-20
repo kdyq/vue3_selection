@@ -48,6 +48,7 @@ router.beforeEach(async (to, from, next) => {
             type: 'warning',
             message: '登录已失效，请重新登录',
           })
+          await userStore.userLogout()
           next({ path: '/login' })
         }
       }

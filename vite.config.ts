@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -12,7 +12,9 @@ import path from 'path'
 import { viteMockServe } from 'vite-plugin-mock'
 
 // https://vite.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
+  //获取各种环境下的对应的变量
+  const env = loadEnv(mode, process.cwd())
   return {
     plugins: [
       vue(),
@@ -33,8 +35,16 @@ export default defineConfig(({ command }) => {
     server: {
       // 核心配置：指定监听的地址为 127.0.0.1
       host: '127.0.0.1',
-      // 可选：保留你原本的端口配置，默认是 5173
-      port: 5173,
+      proxy: {
+        [env.VITE_APP_BASE_API]: {
+          // 获取数据的服务器地址设置
+          target: env.VITE_SERVE,
+          // 需要代理跨域
+          changeOrigin: true,
+          // 路径重写
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
     },
     resolve: {
       alias: {

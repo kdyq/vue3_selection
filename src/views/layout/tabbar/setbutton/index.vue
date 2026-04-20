@@ -50,8 +50,8 @@ const fullScreen = () => {
     }
 }
 //退出登录
-const logut = () => {
-    userStore.userLogout()
+const logut = async () => {
+    await userStore.userLogout()
     //跳转到登录页
     router.replace('/login')
 };

@@ -5,7 +5,7 @@ import type {
   loginResponseData,
   userInfoResponseData,
 } from '@/api/user/type'
-import { reqLogin, reqUserInfo } from '@/api/user'
+import { reqLogin, reqUserInfo, reqLogout } from '@/api/user'
 import { ref } from 'vue'
 import { constantRoute } from '@/router/routers'
 import type { UserState } from './types/type'
@@ -19,36 +19,41 @@ export const useUserStore = defineStore(
       const result: loginResponseData = await reqLogin(data)
       // console.log(result);
       if (result.code == 200) {
-        token.value = result.data.token as string
+        token.value = result.data as string
         return 'ok'
       } else {
-        throw new Error(result.data.message)
+        throw new Error(result.data)
       }
     }
     const username = ref('')
     const avatar = ref('')
     //获取用户信息
     const userInfo = async () => {
-      const result: any = await reqUserInfo()
+      const result: userInfoResponseData = await reqUserInfo()
       if (result.code == 200) {
-        username.value = result.data.checkUser.username
-        avatar.value = result.data.checkUser.avatar
+        username.value = result.data.name
+        avatar.value = result.data.avatar
         return result
       } else {
-        return Promise.reject('获取用户信息失败')
+        return Promise.reject(new Error(result.message))
       }
     }
     //清空登录信息
-    const userLogout = () => {
-      // 清空所有状态
-      token.value = ''
-      username.value = ''
-      avatar.value = ''
-      // 重置菜单
-      menuRoute.value = constantRoute
-      // 清空本地存储
-      localStorage.removeItem('token')
-      return 'ok'
+    const userLogout = async () => {
+      const result: any = await reqLogout()
+      if (result.code == 200) {
+        // 清空所有状态
+        token.value = ''
+        username.value = ''
+        avatar.value = ''
+        // 重置菜单
+        menuRoute.value = constantRoute
+        // 清空本地存储
+        localStorage.removeItem('token')
+        return 'ok'
+      } else {
+        return Promise.reject(new Error(result.message))
+      }
     }
     return {
       userLogin,
