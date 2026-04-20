@@ -31,7 +31,8 @@
         </el-table>
         <!-- 分页器组件 -->
         <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :page-sizes="[3, 5, 7, 9]"
-            :background="true" layout="prev, pager, next, jumper,->,sizes,total" :total="total" />
+            :background="true" layout="prev, pager, next, jumper,->,sizes,total" :total="total"
+            @size-change="changePageSize" @current-change="getTrademarkList" />
     </el-card>
 </template>
 
@@ -49,7 +50,8 @@ const total = ref<number>(0)
 const trademarkArr = ref<Records>([])
 
 //封装获取品牌列表数据的方法
-const getTrademarkList = async () => {
+const getTrademarkList = async (page = 1) => {
+    currentPage.value = page
     const result: TradeMarkResponseData = await reqHasTrademark(currentPage.value, pageSize.value)
     if (result.code === 200) {
         total.value = result.data.total
@@ -59,6 +61,10 @@ const getTrademarkList = async () => {
 onMounted(() => {
     getTrademarkList()
 })
+//下拉框选择每页显示的条数
+const changePageSize = () => {
+    getTrademarkList()
+}
 </script>
 
 <style scoped></style>
