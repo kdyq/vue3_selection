@@ -16,7 +16,7 @@
         <div class="layout_tabbar" :class="{ fold: layoutStore.fold ? true : false }">
             <Tabbar></Tabbar>
         </div>
-        <!-- 右侧内容 -->
+        <!-- 主体内容 -->
         <div class="layout_main" :class="{ fold: layoutStore.fold ? true : false }">
             <Main></Main>
         </div>
@@ -78,7 +78,6 @@ const layoutStore = useLayoutStore();
         left: $base-menu-width;
         width: calc(100% - $base-menu-width);
         height: calc(100vh - $base-tubbar-height);
-        background-color: pink;
         padding: 20px;
         overflow: auto;
         transition: all 0.3s;
