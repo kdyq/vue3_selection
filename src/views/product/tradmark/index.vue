@@ -2,7 +2,7 @@
     <div>
         <el-card>
             <!-- 左上角添加品牌按钮 -->
-            <el-button type="primary" size="default" icon="Plus" @click="addOrchangeTrademark">添加品牌</el-button>
+            <el-button type="primary" size="default" icon="Plus" @click="addTrademark">添加品牌</el-button>
             <!-- 表格组件 -->
             <el-table style="margin: 10px 0;" border :data="trademarkArr">
                 <el-table-column label="序号" width="90px" align="center" type="index"></el-table-column>
@@ -23,7 +23,7 @@
                     <template v-slot="{ row }">
                         <el-tooltip content="编辑" placement="top">
                             <el-button type="warning" size="default" icon="Edit"
-                                @click="addOrchangeTrademark"></el-button>
+                                @click="changeTrademark(row)"></el-button>
                         </el-tooltip>
                         <el-tooltip content="删除" placement="top">
                             <el-button type="danger" size="default" icon="Delete"></el-button>
@@ -37,7 +37,8 @@
                 @size-change="changePageSize" @current-change="getTrademarkList" />
         </el-card>
         <!-- 对话框组件，用于添加或修改品牌 -->
-        <el-dialog v-model="dialogVisible" title="添加品牌" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-dialog v-model="dialogVisible" :title="trademarkParams.id ? '修改品牌' : '添加品牌'" :close-on-click-modal="false"
+            :close-on-press-escape="false">
             <!-- v-model:用于控制显示还是隐藏 -->
             <!-- form表单 -->
             <el-form style="width: 70%;margin:10px 50px;">
@@ -105,23 +106,36 @@ onMounted(() => {
 const changePageSize = () => {
     getTrademarkList()
 }
-//添加和编辑时显示对话框
-const addOrchangeTrademark = () => {
+//添加时显示对话框
+const addTrademark = () => {
     dialogVisible.value = true
     // 清空数据
     trademarkParams.tmName = ''
     trademarkParams.logoUrl = ''
     trademarkParams.id = 0
 }
+//编辑时显示对话框,row为当前品牌数据数据
+const changeTrademark = (row: Trademark) => {
+    dialogVisible.value = true
+    trademarkParams.tmName = row.tmName
+    trademarkParams.logoUrl = row.logoUrl
+    trademarkParams.id = row.id
+}
 //确定添加品牌
 const confirm = async () => {
     const result = await reqAddOrUpdateTrademark(trademarkParams)
     if (result.code === 200) {
         dialogVisible.value = false
-        ElMessage.success('添加成功')
-        getTrademarkList()
+        ElMessage({
+            type: 'success',
+            message: trademarkParams.id ? '修改成功' : '添加成功'
+        })
+        getTrademarkList(trademarkParams.id ? currentPage.value : 1)
     } else {
-        ElMessage.error('添加失败')
+        ElMessage({
+            type: 'error',
+            message: trademarkParams.id ? '修改失败' : '添加失败'
+        })
     }
 }
 //上传图片前触发的钩子，用于限制文件类型和大小
