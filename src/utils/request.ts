@@ -42,7 +42,7 @@ request.interceptors.response.use(
       // 提示错误信息
       ElMessage({
         type: 'error',
-        message: response.data.data.message,
+        message: response.data.message,
       })
       // 抛出错误
       return Promise.reject(new Error(response.data.message))
@@ -53,6 +53,31 @@ request.interceptors.response.use(
   },
   (error) => {
     // 失败回调：处理http网络错误
+    // 定义变量存储网络错误信息
+    let message = '网络出现问题'
+    // http状态码
+    const status = error.response?.status
+    switch (status) {
+      case 401:
+        message = 'Token 过期'
+        break
+      case 403:
+        message = '无权访问'
+        break
+      case 404:
+        message = '请求地址错误'
+        break
+      case 500:
+        message = '服务器出现问题'
+        break
+    }
+    // 提示错误信息
+    ElMessage({
+      type: 'error',
+      message,
+    })
+
+    return Promise.reject(error)
   },
 )
 export default request

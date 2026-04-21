@@ -36,7 +36,6 @@ import { ElNotification } from 'element-plus';
 //获取时间
 import { getTime } from '@/utils/time';
 import type { FormItemRule } from 'element-plus'
-import { lo } from 'element-plus/es/locale/index.mjs';
 const userStore = useUserStore();
 const router = useRouter()
 //收集表单数据

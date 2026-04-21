@@ -33,7 +33,7 @@
             </el-table>
             <!-- 分页器组件 -->
             <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :page-sizes="[3, 5, 7, 9]"
-                :background="true" layout="prev, pager, next, jumper,->,sizes,total" :total="total"
+                :background="true" layout="prev, pager, next, jumper,->,sizes,total" :total="total" :pager-count="5"
                 @size-change="changePageSize" @current-change="getTrademarkList" />
         </el-card>
         <!-- 对话框组件，用于添加或修改品牌 -->
@@ -120,7 +120,7 @@ const confirm = async () => {
         dialogVisible.value = false
         ElMessage.success('添加成功')
         getTrademarkList()
-    }else{
+    } else {
         ElMessage.error('添加失败')
     }
 }
