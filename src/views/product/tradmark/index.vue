@@ -41,11 +41,11 @@
             :close-on-press-escape="false">
             <!-- v-model:用于控制显示还是隐藏 -->
             <!-- form表单 -->
-            <el-form style="width: 70%;margin:10px 50px;">
-                <el-form-item label="品牌名称" label-width="80px">
+            <el-form style="width: 70%;margin:10px 50px;" :model="trademarkParams" :rules="rules" ref="formRef">
+                <el-form-item label="品牌名称" label-width="88px" prop="tmName">
                     <el-input placeholder="请输入品牌名称" v-model="trademarkParams.tmName"></el-input>
                 </el-form-item>
-                <el-form-item label="品牌LOGO" label-width="80px">
+                <el-form-item label="品牌LOGO" label-width="100px" prop="logoUrl">
                     <el-upload class="avatar-uploader" action="/api/admin/product/fileUpload" :show-file-list="false"
                         :headers="headers" :before-upload="beforeAvatarUpload" :on-success="handleAvatarSuccess">
                         <img v-if="trademarkParams.logoUrl" :src="trademarkParams.logoUrl" class="avatar" />
@@ -70,7 +70,7 @@ import { reqHasTrademark, reqAddOrUpdateTrademark } from '@/api/product/trademar
 import type { TradeMarkResponseData, Trademark, Records } from '@/api/product/trademark/type'
 import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
-import type { UploadProps } from 'element-plus'
+import type { UploadProps, FormItemRule } from 'element-plus'
 //当前页码
 const currentPage = ref<number>(1)
 //每页显示的条数
@@ -84,6 +84,7 @@ const dialogVisible = ref<boolean>(false)
 // 获取用户相关的小仓库：获取仓库内部token，登录成功以后携带给服务器
 const userStore = useUserStore()
 const headers = { Token: userStore.token }
+const formRef = ref()
 //定义收集新增品牌数据
 const trademarkParams = reactive<Trademark>({
     tmName: '',
@@ -113,6 +114,8 @@ const addTrademark = () => {
     trademarkParams.tmName = ''
     trademarkParams.logoUrl = ''
     trademarkParams.id = 0
+    //清空表单验证
+    formRef.value?.resetFields()
 }
 //编辑时显示对话框,row为当前品牌数据数据
 const changeTrademark = (row: Trademark) => {
@@ -123,6 +126,8 @@ const changeTrademark = (row: Trademark) => {
 }
 //确定添加品牌
 const confirm = async () => {
+    //进行表单校验
+    await formRef.value.validate()
     const result = await reqAddOrUpdateTrademark(trademarkParams)
     if (result.code === 200) {
         dialogVisible.value = false
@@ -157,6 +162,38 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
     uploadFile
 ) => {
     trademarkParams.logoUrl = response.data
+    //清除校验效果
+    formRef.value.clearValidate('logoUrl')
+}
+//自定义校验规则
+const rules = {
+    tmName: [
+        { required: true, message: '请输入品牌名称', trigger: 'change' },
+        { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'change' },
+        {
+            validator(rule: FormItemRule, value: string, callback: Function) {
+                // 任何空格都不允许
+                if (value.includes(' ')) {
+                    callback(new Error('品牌名不能包含空格'))
+                } else {
+                    callback()
+                }
+            },
+            trigger: 'change'
+        }
+    ] as FormItemRule[],
+    logoUrl: [
+        {
+            required: true,
+            validator(rule: FormItemRule, value: string, callback: Function) {
+                if (value) {
+                    callback()
+                } else {
+                    callback(new Error('请上传品牌logo'))
+                }
+            }
+        }
+    ]
 }
 </script>
 
