@@ -1,5 +1,4 @@
-// 分类相关的数据的ts
-
+// 分类相关的数据的ts类型
 export interface ResponseData {
   code: number
   message: string

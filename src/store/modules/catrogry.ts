@@ -1,11 +1,11 @@
 //商品分类全局组件的小仓库
 import { defineStore } from 'pinia'
-import type { CategoryResponseData } from '@/api/product/attr/type'
+import type { CategoryResponseData, CategoryObj } from '@/api/product/attr/type'
 import { reqC1 } from '@/api/product/attr'
-import { compile, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 export const useCategoryStore = defineStore('Category', () => {
   //存储一级分类数据
-  const c1Arr = ref<any>([])
+  const c1Arr = ref<CategoryObj[]>([])
   const c1Id = ref<number | string>('')
 
   const getC1 = async () => {
