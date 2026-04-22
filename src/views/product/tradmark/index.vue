@@ -25,9 +25,11 @@
                             <el-button type="warning" size="default" icon="Edit"
                                 @click="changeTrademark(row)"></el-button>
                         </el-tooltip>
-                        <el-tooltip content="删除" placement="top">
-                            <el-button type="danger" size="default" icon="Delete"></el-button>
-                        </el-tooltip>
+                        <el-popconfirm :title="`确定删除 ${row.tmName} 吗？`" width="auto" @confirm="deleteTrademark(row.id)">
+                            <template #reference>
+                                <el-button type="danger" icon="Delete" title="删除" </el-button>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -66,11 +68,12 @@
 
 <script setup lang="ts" name="tradmark">
 import { ref, onMounted, reactive } from 'vue'
-import { reqHasTrademark, reqAddOrUpdateTrademark } from '@/api/product/trademark/index'
+import { reqHasTrademark, reqAddOrUpdateTrademark, reqDeleteTrademark } from '@/api/product/trademark/index'
 import type { TradeMarkResponseData, Trademark, Records } from '@/api/product/trademark/type'
 import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
 import type { UploadProps, FormItemRule } from 'element-plus'
+import { tr } from 'element-plus/es/locale/index.mjs'
 //当前页码
 const currentPage = ref<number>(1)
 //每页显示的条数
@@ -194,6 +197,22 @@ const rules = {
             }
         }
     ]
+}
+//删除品牌
+const deleteTrademark = async (id: number) => {
+    const result = await reqDeleteTrademark(id)
+    if (result.code === 200) {
+        ElMessage({
+            type: 'success',
+            message: '删除成功'
+        })
+        getTrademarkList(trademarkArr.value.length === 1 ? currentPage.value - 1 : currentPage.value)
+    } else {
+        ElMessage({
+            type: 'error',
+            message: '删除失败,请检查权限'
+        })
+    }
 }
 </script>
 
