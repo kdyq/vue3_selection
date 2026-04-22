@@ -3,7 +3,7 @@
         <!-- 三级分类组件 -->
         <Category />
         <el-card style="margin: 10px 0;">
-            <el-button type="primary" size="default" icon="Plus">添加属性</el-button>
+            <el-button type="primary" size="default" icon="Plus" :disabled="categoryStore.c3Id?false:true">添加属性</el-button>
             <el-table border style="margin: 10px 0;">
                 <el-table-column label="序号" type="index" align="center" width="80px">
                 </el-table-column>
@@ -19,6 +19,8 @@
 </template>
 
 <script setup lang="ts" name='attr'>
+import { useCategoryStore } from '@/store/modules/catrogry';
+const categoryStore = useCategoryStore();
 </script>
 
 <style scoped lang="scss"></style>
