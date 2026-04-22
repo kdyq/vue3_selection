@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- 三级分类组件 -->
-        <Category/>
+        <Category />
         <el-card style="margin: 10px 0;">
             <el-button type="primary" size="default" icon="Plus">添加属性</el-button>
             <el-table border style="margin: 10px 0;">
@@ -19,11 +19,6 @@
 </template>
 
 <script setup lang="ts" name='attr'>
-
 </script>
 
-<style scoped lang="scss">
-.select-width {
-    width: 220px;
-}
-</style>
+<style scoped lang="scss"></style>
