@@ -36,18 +36,23 @@
                 <!-- 展示添加属性和修改数据的结构 -->
                 <el-form :inline="true">
                     <el-form-item label="属性名称">
-                        <el-input placeholder="请输入属性名称"></el-input>
+                        <el-input placeholder="请输入属性名称" v-model="attrParams.attrName"></el-input>
                     </el-form-item>
                 </el-form>
-                <el-button type="primary" size="default" icon="Plus">添加属性</el-button>
+                <el-button :disabled="!attrParams.attrName" type="primary" size="default" icon="Plus"
+                    @click="addAttrValue">添加属性</el-button>
                 <el-button size="default" @click="cancel">取消</el-button>
-                <el-table border stripe style="margin: 10px 0;">
+                <el-table border stripe style="margin: 10px 0;" :data="attrParams.attrValueList">
                     <el-table-column label="序号" type="index" align="center" width="80px">
                     </el-table-column>
-                    <el-table-column label="属性值名称"></el-table-column>
+                    <el-table-column label="属性值名称">
+                        <template v-slot="{ row }">
+                            <el-input placeholder="请输入属性值名称" v-model="row.valueName"></el-input>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="属性值操作"></el-table-column>
                 </el-table>
-                <el-button type="primary" size="default">保存</el-button>
+                <el-button type="primary" size="default" @click="save">保存</el-button>
                 <el-button size="default" @click="cancel">取消</el-button>
             </div>
         </el-card>
@@ -56,14 +61,22 @@
 
 <script setup lang="ts" name='attr'>
 import { useCategoryStore } from '@/store/modules/catrogry';
-import { reqAttr } from '@/api/product/attr';
-import { watch, ref } from 'vue';
+import { reqAttr, reqAddOrUpdateAttr } from '@/api/product/attr';
+import { watch, ref, reactive } from 'vue';
 import type { AttrResponseData, Attr } from '@/api/product/attr/type';
+import { ElMessage } from 'element-plus';
 const categoryStore = useCategoryStore();
 //存储已有属性值和属性对象
 const attrArr = ref<Attr[]>([])
 //控制card组件的变化
 const scene = ref<number>(0)//0展示table，1展示添加或修改
+//收集新增的属性的数据
+const attrParams = reactive<Attr>({
+    attrName: '',//属性名称
+    attrValueList: [],//属性值列表
+    categoryId: '',//三级分类id
+    categoryLevel: 3//三级分类
+})
 //监听三级分类id的变化
 watch(() => categoryStore.c3Id, () => {
     //清空属性数据
@@ -79,6 +92,13 @@ const getAttr = async () => {
 }
 //添加属性按钮
 const addAttr = () => {
+    //清空数据并收集三级分类id
+    Object.assign(attrParams, {
+        attrName: '',
+        attrValueList: [],
+        categoryId: categoryStore.c3Id,
+        categoryLevel: 3
+    })
     scene.value = 1;
 }
 //修改属性按钮
@@ -88,6 +108,31 @@ const changeAttr = () => {
 //取消按钮
 const cancel = () => {
     scene.value = 0;
+}
+//添加属性值按钮
+const addAttrValue = () => {
+    attrParams.attrValueList.push({
+        valueName: ''
+    })
+}
+//保存按钮
+const save = async () => {
+    //发请求
+    const result: any = await reqAddOrUpdateAttr(attrParams);
+    if (result.code == 200) {
+        //切换场景
+        scene.value = 0;
+        ElMessage({
+            type: 'success',
+            message: attrParams.id ? '修改成功' : '添加成功'
+        })
+        getAttr();
+    } else {
+        ElMessage({
+            type: 'error',
+            message: attrParams.id ? '修改失败' : '添加失败'
+        })
+    }
 }
 </script>
 
