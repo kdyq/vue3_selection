@@ -21,7 +21,8 @@
                     <el-table-column label="操作" width="160px">
                         <template v-slot="{ row }">
                             <el-tooltip content="编辑" placement="top">
-                                <el-button type="warning" size="default" icon="Edit" @click="changeAttr"></el-button>
+                                <el-button type="warning" size="default" icon="Edit"
+                                    @click="changeAttr(row)"></el-button>
                             </el-tooltip>
                             <el-popconfirm :title="`确定删除 这个 吗？`" width="auto">
                                 <template #reference>
@@ -112,8 +113,10 @@ const addAttr = () => {
     scene.value = 1;
 }
 //修改属性按钮
-const changeAttr = () => {
+const changeAttr = (row: Attr) => {
     scene.value = 1;
+    //合并对象:深拷贝
+    Object.assign(attrParams, JSON.parse(JSON.stringify(row)));
 }
 //取消按钮
 const cancel = () => {
