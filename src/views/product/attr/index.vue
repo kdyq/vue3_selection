@@ -48,11 +48,16 @@
                     <el-table-column label="属性值名称">
                         <template v-slot="{ row, $index }">
                             <el-input v-if="row.flag" @blur="toLook(row, $index)" placeholder="请输入属性值名称"
-                                v-model="row.valueName"></el-input>
-                            <div v-else @click="toEdit(row)">{{ row.valueName }}</div>
+                                v-model="row.valueName" :ref="(vc: any) => inputArr[$index] = vc"></el-input>
+                            <div v-else @click="toEdit(row, $index)">{{ row.valueName }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="属性值操作"></el-table-column>
+                    <el-table-column label="属性值操作">
+                        <template v-slot="{ row, $index }">
+                            <el-button type="danger" size="default" icon="Delete"
+                                @click="attrParams.attrValueList.splice($index, 1);"></el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
                 <el-button type="primary" size="default" @click="save"
                     :disabled="attrParams.attrValueList.length > 0 && attrParams.attrValueList[0].valueName !== '' ? false : true">保存</el-button>
@@ -65,7 +70,7 @@
 <script setup lang="ts" name='attr'>
 import { useCategoryStore } from '@/store/modules/catrogry';
 import { reqAttr, reqAddOrUpdateAttr } from '@/api/product/attr';
-import { watch, ref, reactive } from 'vue';
+import { watch, ref, reactive, nextTick } from 'vue';
 import type { AttrResponseData, Attr, AttrValue } from '@/api/product/attr/type';
 import { ElMessage } from 'element-plus';
 const categoryStore = useCategoryStore();
@@ -80,6 +85,8 @@ const attrParams = reactive<Attr>({
     categoryId: '',//三级分类id
     categoryLevel: 3//三级分类
 })
+//存储组件实例el-input
+const inputArr = ref<any>([])
 //监听三级分类id的变化
 watch(() => categoryStore.c3Id, () => {
     //清空属性数据
@@ -117,6 +124,10 @@ const addAttrValue = () => {
     attrParams.attrValueList.push({
         valueName: '',
         flag: true//用于控制每个属性值的编辑模式与查看模式
+    })
+    //获取最后的组件实例聚焦
+    nextTick(() => {
+        inputArr.value[attrParams.attrValueList.length - 1].focus();
     })
 }
 //保存按钮
@@ -165,8 +176,13 @@ const toLook = (row: AttrValue, $index: number) => {
     }
     row.flag = false;
 }
-const toEdit = (row: AttrValue) => {
+const toEdit = (row: AttrValue, $index: number) => {
+
     row.flag = true;
+    //获取更新后的实例
+    nextTick(() => {
+        inputArr.value[$index].focus();
+    })
 }
 </script>
 
