@@ -24,9 +24,10 @@
                                 <el-button type="warning" size="default" icon="Edit"
                                     @click="changeAttr(row)"></el-button>
                             </el-tooltip>
-                            <el-popconfirm :title="`确定删除 这个 吗？`" width="auto">
+                            <el-popconfirm :title="`确定删除 ${row.attrName} 吗？`" width="auto"
+                                @confirm="deleteAttr(row.id)">
                                 <template #reference>
-                                    <el-button type="danger" icon="Delete" title="删除" </el-button>
+                                    <el-button type="danger" icon="Delete" title="删除"></el-button>
                                 </template>
                             </el-popconfirm>
                         </template>
@@ -70,8 +71,8 @@
 
 <script setup lang="ts" name='attr'>
 import { useCategoryStore } from '@/store/modules/catrogry';
-import { reqAttr, reqAddOrUpdateAttr } from '@/api/product/attr';
-import { watch, ref, reactive, nextTick } from 'vue';
+import { reqAttr, reqAddOrUpdateAttr, reqRemoveAttr } from '@/api/product/attr';
+import { watch, ref, reactive, nextTick, onBeforeUnmount } from 'vue';
 import type { AttrResponseData, Attr, AttrValue } from '@/api/product/attr/type';
 import { ElMessage } from 'element-plus';
 const categoryStore = useCategoryStore();
@@ -187,6 +188,26 @@ const toEdit = (row: AttrValue, $index: number) => {
         inputArr.value[$index].focus();
     })
 }
+//删除属性
+const deleteAttr = async (attrId: number) => {
+    const result: any = await reqRemoveAttr(attrId);
+    if (result.code == 200) {
+        ElMessage({
+            type: 'success',
+            message: '删除成功'
+        })
+        getAttr();
+    } else {
+        ElMessage({
+            type: 'error',
+            message: '删除失败'
+        })
+    }
+}
+//组件销毁前清空数据
+onBeforeUnmount(() => {
+    categoryStore.reset();
+})
 </script>
 
 <style scoped lang="scss"></style>

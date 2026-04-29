@@ -34,5 +34,14 @@ export const useCategoryStore = defineStore('Category', () => {
       c3Arr.value = result.data
     }
   }
-  return { c1Arr, c1Id, c2Arr, c2Id, c3Arr, c3Id, getC1, getC2, getC3 }
+  //重置数据
+  const reset = () => {
+    c1Id.value = ''
+    c2Id.value = ''
+    c3Id.value = ''
+    c1Arr.value = []
+    c2Arr.value = []
+    c3Arr.value = []
+  }
+  return { c1Arr, c1Id, c2Arr, c2Id, c3Arr, c3Id, getC1, getC2, getC3, reset }
 })
