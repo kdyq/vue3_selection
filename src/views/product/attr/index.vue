@@ -46,13 +46,16 @@
                     <el-table-column label="序号" type="index" align="center" width="80px">
                     </el-table-column>
                     <el-table-column label="属性值名称">
-                        <template v-slot="{ row }">
-                            <el-input placeholder="请输入属性值名称" v-model="row.valueName"></el-input>
+                        <template v-slot="{ row, $index }">
+                            <el-input v-if="row.flag" @blur="toLook(row, $index)" placeholder="请输入属性值名称"
+                                v-model="row.valueName"></el-input>
+                            <div v-else @click="toEdit(row)">{{ row.valueName }}</div>
                         </template>
                     </el-table-column>
                     <el-table-column label="属性值操作"></el-table-column>
                 </el-table>
-                <el-button type="primary" size="default" @click="save">保存</el-button>
+                <el-button type="primary" size="default" @click="save"
+                    :disabled="attrParams.attrValueList.length > 0 && attrParams.attrValueList[0].valueName !== '' ? false : true">保存</el-button>
                 <el-button size="default" @click="cancel">取消</el-button>
             </div>
         </el-card>
@@ -63,7 +66,7 @@
 import { useCategoryStore } from '@/store/modules/catrogry';
 import { reqAttr, reqAddOrUpdateAttr } from '@/api/product/attr';
 import { watch, ref, reactive } from 'vue';
-import type { AttrResponseData, Attr } from '@/api/product/attr/type';
+import type { AttrResponseData, Attr, AttrValue } from '@/api/product/attr/type';
 import { ElMessage } from 'element-plus';
 const categoryStore = useCategoryStore();
 //存储已有属性值和属性对象
@@ -112,7 +115,8 @@ const cancel = () => {
 //添加属性值按钮
 const addAttrValue = () => {
     attrParams.attrValueList.push({
-        valueName: ''
+        valueName: '',
+        flag: true//用于控制每个属性值的编辑模式与查看模式
     })
 }
 //保存按钮
@@ -133,6 +137,36 @@ const save = async () => {
             message: attrParams.id ? '修改失败' : '添加失败'
         })
     }
+}
+//控制属性值的编辑模式与查看模式
+const toLook = (row: AttrValue, $index: number) => {
+    //属性值为空判断
+    if (row.valueName.trim() == '') {
+        attrParams.attrValueList.splice($index, 1);//清空
+        ElMessage({
+            type: 'warning',
+            message: '属性值不能为空'
+        })
+        return;
+    }
+    //属性值重复判断
+    const repet = attrParams.attrValueList.find((item) => {
+        if (item != row) {
+            return item.valueName === row.valueName;
+        }
+    })
+    if (repet) {
+        attrParams.attrValueList.splice($index, 1);
+        ElMessage({
+            type: 'warning',
+            message: '属性值不能重复'
+        })
+        return;
+    }
+    row.flag = false;
+}
+const toEdit = (row: AttrValue) => {
+    row.flag = true;
 }
 </script>
 
