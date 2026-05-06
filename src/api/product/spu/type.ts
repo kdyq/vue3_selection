@@ -1,4 +1,4 @@
-import type { Attr } from '../attr/type' 
+import type { Attr } from '../attr/type'
 
 // 服务器全部接口返回的数据类型
 export interface ResponseData {
@@ -46,8 +46,8 @@ export interface AllTradeMark extends ResponseData {
 export interface SpuImg {
   id?: number
   spuId?: number
-  imgName: string
-  imgUrl: string
+  imgName?: string
+  imgUrl?: string
 }
 // 已有的SPU的照片墙数据的类型
 export interface SpuHasImg extends ResponseData {
