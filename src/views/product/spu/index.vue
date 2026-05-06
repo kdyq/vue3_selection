@@ -18,7 +18,7 @@
                             <template v-slot="{ row }">
                                 <el-button type="primary" size="default" icon="Plus" title="添加SKU"></el-button>
                                 <el-button type="warning" size="default" icon="Edit" title="修改SPU"
-                                    @click="updateSpu"></el-button>
+                                    @click="updateSpu(row)"></el-button>
                                 <el-button type="info" size="default" icon="View" title="查看SKU列表"></el-button>
                                 <el-button type="danger" size="default" icon="Delete" title="删除SPU"></el-button>
                             </template>
@@ -31,7 +31,7 @@
                     :total="total" :pager-count="5" @current-change="getHasSpu" @size-change="changePageSize" />
             </div>
             <!-- 添加或修改spu -->
-            <spuForm v-show="scene == 1" @change-scene="changeScene" />
+            <spuForm ref="spu" v-show="scene == 1" @change-scene="changeScene" />
             <!-- 添加SKU -->
             <skuForm v-show="scene == 2" />
         </el-card>
@@ -41,12 +41,13 @@
 <script setup lang="ts" name="spu">
 import { ref, watch } from 'vue';
 import { reqHasSpu } from '@/api/product/spu'
-import type { HasSpuResponseData, Records } from '@/api/product/spu/type';
+import type { HasSpuResponseData, Records, SpuData } from '@/api/product/spu/type';
 import { useCategoryStore } from '@/store/modules/catrogry';
 //引入子组件
 import spuForm from './spuForm.vue';
 import skuForm from './skuForm.vue';
 const categoryStore = useCategoryStore();
+const spu = ref<any>();
 //定义场景
 const scene = ref<number>(0);//0：显示已有SPU  1：添加或修改SPU 2：添加SKU
 //默认页码
@@ -84,8 +85,11 @@ const addSpu = () => {
     scene.value = 1;
 }
 // 修改SPU
-const updateSpu = () => {
+const updateSpu = (row: SpuData) => {
+    //切换场景
     scene.value = 1;
+    //调用子组件方法获取完整的SPU数据
+    spu.value.initHasSpuData(row)
 }
 //子组件spuForm的自定义事件
 const changeScene = (num: number) => {

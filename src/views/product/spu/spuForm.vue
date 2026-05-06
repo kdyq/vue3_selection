@@ -53,15 +53,47 @@
 
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="spuForm">
+import { ref } from 'vue'
 import { useUserStore } from '@/store/modules/user'
+import type { SpuData, AllTradeMark, SpuHasImg, SaleAttrResponseData, HasSaleAttrResponseData, Trademark, SpuImg, SaleAttr, HasSaleAttr } from '@/api/product/spu/type'
+import { reqAllTradeMark, reqAllSaleAttr, reqSpuImageList, reqSpuHasSaleAttr } from '@/api/product/spu'
 const userStore = useUserStore()
 const headers = { Token: userStore.token }
 const $emit = defineEmits(['changeScene'])
+//存储已有的SPU数据
+const allTradeMark = ref<Trademark[]>()
+//存储商品图片
+const spuImg = ref<SpuImg[]>()
+//存储某个SPU的销售属性数据
+const saleAttr = ref<SaleAttr[]>()
+//存储已有的全部SPU的销售属性
+const allSaleAttr = ref<HasSaleAttr[]>()
 //点击取消按钮
 const cansel = () => {
     $emit('changeScene', 0)
 }
+//自定义方法，用于获取数据
+const initHasSpuData = async (row: SpuData) => {
+    //row为父组件传入的当前SPU数据（不完整）
+    //获取全部品牌的数据
+    const spu_ALL: AllTradeMark = await reqAllTradeMark()
+    //获取某个品牌旗下的商品图片
+    const spu_img: SpuHasImg = await reqSpuImageList((row.id as number))
+    //获取某个SPU下的销售属性数据
+    const spu_sale: SaleAttrResponseData = await reqSpuHasSaleAttr((row.id as number))
+    //获取已有的全部SPU的销售属性
+    const all_sale: HasSaleAttrResponseData = await reqAllSaleAttr()
+    // 存储
+    allTradeMark.value = spu_ALL.data
+    spuImg.value = spu_img.data
+    saleAttr.value = spu_sale.data
+    allSaleAttr.value = all_sale.data
+}
+//对外暴露
+defineExpose({
+    initHasSpuData
+})
 </script>
 
 <style lang="scss" scoped></style>
