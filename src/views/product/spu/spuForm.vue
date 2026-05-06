@@ -20,7 +20,7 @@
                     <Plus />
                 </el-icon>
             </el-upload>
-            <el-dialog>
+            <el-dialog v-model="dialogVisible">
                 <img w-full :src="diglogImageUrl" alt="Preview Image" style="height: 100%; width: 100%;" />
             </el-dialog>
         </el-form-item>
@@ -69,7 +69,7 @@ import { useUserStore } from '@/store/modules/user'
 import type { SpuData, AllTradeMark, SpuHasImg, SaleAttrResponseData, HasSaleAttrResponseData, Trademark, SpuImg, SaleAttr, HasSaleAttr } from '@/api/product/spu/type'
 import { reqAllTradeMark, reqAllSaleAttr, reqSpuImageList, reqSpuHasSaleAttr } from '@/api/product/spu'
 import { ElMessage } from 'element-plus'
-import type { UploadUserFile, UploadProps, FormItemRule } from 'element-plus'
+import type { UploadUserFile, UploadProps } from 'element-plus'
 const userStore = useUserStore()
 const headers = { Token: userStore.token }
 const $emit = defineEmits(['changeScene'])
