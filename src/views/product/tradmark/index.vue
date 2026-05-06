@@ -73,7 +73,6 @@ import type { TradeMarkResponseData, Trademark, Records } from '@/api/product/tr
 import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
 import type { UploadProps, FormItemRule } from 'element-plus'
-import { tr } from 'element-plus/es/locale/index.mjs'
 //当前页码
 const currentPage = ref<number>(1)
 //每页显示的条数
