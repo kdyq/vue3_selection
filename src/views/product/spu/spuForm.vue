@@ -75,6 +75,7 @@ import type { SpuData, AllTradeMark, SpuHasImg, SaleAttrResponseData, HasSaleAtt
 import { reqAllTradeMark, reqAllSaleAttr, reqSpuImageList, reqSpuHasSaleAttr, reqAddOrUpdateSpu } from '@/api/product/spu'
 import { ElMessage } from 'element-plus'
 import type { UploadUserFile, UploadProps } from 'element-plus'
+import { ca } from 'element-plus/es/locale/index.mjs'
 const userStore = useUserStore()
 const headers = { Token: userStore.token }
 const $emit = defineEmits(['changeScene'])
@@ -105,15 +106,10 @@ const diglogImageUrl = ref('')
 const saleAttrId_Name = ref<string>('')
 //点击取消按钮
 const cansel = () => {
-    $emit('changeScene', 0)
+    $emit('changeScene', { flag: 0, params: SpuParams.value.id ? 'update' : 'add' })
 }
 //自定义方法，用于获取数据
 const initHasSpuData = async (row: SpuData) => {
-    if (!row || !row.id) {
-        console.warn('initHasSpuData 接收到的 row 为空或缺少 id', row)
-        ElMessage.error('数据异常，无法初始化表单')
-        return  // 直接终止，不覆盖 SpuParams
-    }
     //row为父组件传入的当前SPU数据（不完整）
     SpuParams.value = row
     //获取全部品牌的数据
@@ -248,7 +244,7 @@ const save = async () => {
             message: SpuParams.value.id ? '修改成功' : '添加成功'
         })
         //返回上一级
-        $emit('changeScene', 0)
+        $emit('changeScene', { flag: 0, params: SpuParams.value.id ? 'update' : 'add' })
     } else {
         ElMessage({
             type: 'error',
@@ -257,8 +253,29 @@ const save = async () => {
     }
 }
 //添加一个SPU
-const initAddSpu = () => {
-    console.log(111111);
+const initAddSpu = async (c3Id: number | string) => {
+    //清空数据
+    Object.assign(SpuParams.value, {
+        category3Id: '',
+        spuName: '',
+        description: '',
+        tmId: '',
+        spuSaleAttrList: [],
+        spuImageList: [],
+    })
+    SpuParams.value.id = undefined
+    spuImg.value = []
+    uploadFileList.value = []
+    saleAttr.value = []
+    saleAttrId_Name.value = ''
+    //获取全部品牌的数据
+    const spu_ALL: AllTradeMark = await reqAllTradeMark()
+    //获取已有的全部SPU的销售属性
+    const all_sale: HasSaleAttrResponseData = await reqAllSaleAttr()
+    //存储
+    SpuParams.value.category3Id = c3Id
+    allTradeMark.value = spu_ALL.data
+    allSaleAttr.value = all_sale.data
 }
 //对外暴露
 defineExpose({

@@ -84,7 +84,7 @@ const changePageSize = () => {
 const addSpu = () => {
     scene.value = 1;
     //调用子组件方法
-    spu.value.initAddSpu()
+    spu.value.initAddSpu(categoryStore.c3Id)
 }
 // 修改SPU
 const updateSpu = (row: SpuData) => {
@@ -94,10 +94,17 @@ const updateSpu = (row: SpuData) => {
     spu.value.initHasSpuData(row)
 }
 //子组件spuForm的自定义事件
-const changeScene = (num: number) => {
-    scene.value = num;
+const changeScene = ({ flag, params }: { flag: number; params: string }) => {
+    scene.value = flag;
     //再次获取已有的SPU数据
-    getHasSpu();
+    if (params == 'update') {
+        //更新留在当前页
+        getHasSpu(currentPage.value);
+    } else {
+        //添加留在第一页
+        getHasSpu();
+    }
+
 }
 </script>
 
