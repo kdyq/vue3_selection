@@ -25,12 +25,13 @@
             </el-dialog>
         </el-form-item>
         <el-form-item label="SPU销售属性">
-            <el-select style="width: 200px">
-                <el-option label="全部" value=""></el-option>
-                <el-option label="全部" value=""></el-option>
-                <el-option label="全部" value=""></el-option>
+            <el-select style="width: 200px" v-model="saleAttrId_Name"
+                :placeholder="unSelectSaleAttr.length ? `还有${unSelectSaleAttr.length}个属性没有选择` : `暂无属性`">
+                <el-option v-for="item in unSelectSaleAttr" :key="item.id" :value="`${item.id}:${item.name}`"
+                    :label="item.name"></el-option>
             </el-select>
-            <el-button style="margin-left: 10px;" type="primary" size="default" icon="Plus">添加属性值</el-button>
+            <el-button @click="addSaleAttr" :disabled="saleAttrId_Name ? false : true" style="margin-left: 10px;"
+                type="primary" size="default" icon="Plus">添加属性</el-button>
             <!-- 展示销售属性和属性值 -->
             <el-table border style="margin: 10px 0;" :data="saleAttr">
                 <el-table-column label="序号" type="index" width="80px" align="center"></el-table-column>
@@ -64,7 +65,7 @@
 </template>
 
 <script setup lang="ts" name="spuForm">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useUserStore } from '@/store/modules/user'
 import type { SpuData, AllTradeMark, SpuHasImg, SaleAttrResponseData, HasSaleAttrResponseData, Trademark, SpuImg, SaleAttr, HasSaleAttr } from '@/api/product/spu/type'
 import { reqAllTradeMark, reqAllSaleAttr, reqSpuImageList, reqSpuHasSaleAttr } from '@/api/product/spu'
@@ -96,6 +97,8 @@ const SpuParams = ref<SpuData>({
 const dialogVisible = ref(false)
 //存储预览图片的地址
 const diglogImageUrl = ref('')
+//存储未选择的销售属性的id和name
+const saleAttrId_Name = ref<string>('')
 //点击取消按钮
 const cansel = () => {
     $emit('changeScene', 0)
@@ -148,6 +151,30 @@ const handleRemove = () => {
         type: 'success',
         message: '图片已删除',
     })
+}
+//计算当前SPU还未拥有的销售属性
+const unSelectSaleAttr = computed(() => {
+    const usSelecyAttr = allSaleAttr.value.filter(item => {
+        return saleAttr.value.every(i => {
+            return item.name !== i.saleAttrName
+        })
+    })
+    return usSelecyAttr
+})
+//添加销售属性
+const addSaleAttr = () => {
+    //提取数据
+    const [baseSaleAttrId, saleAttrName] = saleAttrId_Name.value.split(':')
+    //准备一个新的销售属性对象
+    const newSaleAttr: SaleAttr = {
+        baseSaleAttrId: baseSaleAttrId,
+        saleAttrName,
+        spuSaleAttrValueList: []
+    }
+    //追加
+    saleAttr.value.push(newSaleAttr)
+    //清空
+    saleAttrId_Name.value = ''
 }
 //对外暴露
 defineExpose({
