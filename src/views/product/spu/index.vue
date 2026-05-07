@@ -83,6 +83,8 @@ const changePageSize = () => {
 //添加SPU
 const addSpu = () => {
     scene.value = 1;
+    //调用子组件方法
+    spu.value.initAddSpu()
 }
 // 修改SPU
 const updateSpu = (row: SpuData) => {
@@ -94,6 +96,8 @@ const updateSpu = (row: SpuData) => {
 //子组件spuForm的自定义事件
 const changeScene = (num: number) => {
     scene.value = num;
+    //再次获取已有的SPU数据
+    getHasSpu();
 }
 </script>
 

@@ -165,12 +165,12 @@ const toLook = (row: AttrValue, $index: number) => {
         return;
     }
     //属性值重复判断
-    const repet = attrParams.attrValueList.find((item) => {
+    const repeat = attrParams.attrValueList.find((item) => {
         if (item != row) {
             return item.valueName === row.valueName;
         }
     })
-    if (repet) {
+    if (repeat) {
         attrParams.attrValueList.splice($index, 1);
         ElMessage({
             type: 'warning',

@@ -37,12 +37,15 @@
                 <el-table-column label="序号" type="index" width="80px" align="center"></el-table-column>
                 <el-table-column label="销售属性名" width="120px" prop="saleAttrName"></el-table-column>
                 <el-table-column label="销售属性值">
-                    <template v-slot="{ row }">
-                        <el-tag style="margin: 0px 5px;" v-for="item in row.spuSaleAttrValueList" :key="item.id"
-                            closable>
+                    <template v-slot="{ row, $index }">
+                        <el-tag style="margin: 0px 5px;" @close="row.spuSaleAttrValueList.splice(index, 1)"
+                            v-for="(item, index) in row.spuSaleAttrValueList" :key="item.id" closable>
                             {{ item.saleAttrValueName }}
                         </el-tag>
-                        <el-button type="primary" size="small" icon="Plus" title="添加"></el-button>
+                        <el-input v-if="row.flag == true" size="small" placeholder="请输入属性值" clearable
+                            v-model="row.saleAttrValue" style="width: 120px;" @blur="toLook(row)" />
+                        <el-button v-else @click="toEdit(row)" type="primary" size="small" icon="Plus"
+                            title="添加"></el-button>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="120px">
@@ -55,7 +58,8 @@
 
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" size="default">保存</el-button>
+            <el-button type="primary" size="default" @click="save"
+                :disabled="saleAttr.length > 0 ? false : true">保存</el-button>
             <el-button size="default" @click="cansel">取消</el-button>
 
         </el-form-item>
@@ -67,8 +71,8 @@
 <script setup lang="ts" name="spuForm">
 import { ref, computed } from 'vue'
 import { useUserStore } from '@/store/modules/user'
-import type { SpuData, AllTradeMark, SpuHasImg, SaleAttrResponseData, HasSaleAttrResponseData, Trademark, SpuImg, SaleAttr, HasSaleAttr } from '@/api/product/spu/type'
-import { reqAllTradeMark, reqAllSaleAttr, reqSpuImageList, reqSpuHasSaleAttr } from '@/api/product/spu'
+import type { SpuData, AllTradeMark, SpuHasImg, SaleAttrResponseData, HasSaleAttrResponseData, Trademark, SpuImg, SaleAttr, HasSaleAttr, SaleAttrValue } from '@/api/product/spu/type'
+import { reqAllTradeMark, reqAllSaleAttr, reqSpuImageList, reqSpuHasSaleAttr, reqAddOrUpdateSpu } from '@/api/product/spu'
 import { ElMessage } from 'element-plus'
 import type { UploadUserFile, UploadProps } from 'element-plus'
 const userStore = useUserStore()
@@ -105,6 +109,11 @@ const cansel = () => {
 }
 //自定义方法，用于获取数据
 const initHasSpuData = async (row: SpuData) => {
+    if (!row || !row.id) {
+        console.warn('initHasSpuData 接收到的 row 为空或缺少 id', row)
+        ElMessage.error('数据异常，无法初始化表单')
+        return  // 直接终止，不覆盖 SpuParams
+    }
     //row为父组件传入的当前SPU数据（不完整）
     SpuParams.value = row
     //获取全部品牌的数据
@@ -167,7 +176,7 @@ const addSaleAttr = () => {
     const [baseSaleAttrId, saleAttrName] = saleAttrId_Name.value.split(':')
     //准备一个新的销售属性对象
     const newSaleAttr: SaleAttr = {
-        baseSaleAttrId: baseSaleAttrId,
+        baseSaleAttrId: Number(baseSaleAttrId),
         saleAttrName,
         spuSaleAttrValueList: []
     }
@@ -176,9 +185,85 @@ const addSaleAttr = () => {
     //清空
     saleAttrId_Name.value = ''
 }
+//属性值按钮点击事件
+const toEdit = (row: SaleAttr) => {
+    //点击时进入编辑模式
+    row.flag = true
+    row.saleAttrValue = ''
+}
+//表单元素失焦
+const toLook = (row: SaleAttr) => {
+    //收集新增的属性值
+    const { baseSaleAttrId, saleAttrValue } = row
+    //整理成需要的形式
+    const newSaleAttrValue: SaleAttrValue = {
+        baseSaleAttrId,
+        saleAttrValueName: (saleAttrValue as string)
+    }
+    //非法情况判断
+    //属性值为空
+    if (saleAttrValue!.trim() == '') {
+        ElMessage({
+            type: 'warning',
+            message: '属性值不能为空'
+        })
+        row.flag = false
+        return;
+    }
+
+    //属性值重复
+    const repeat = row.spuSaleAttrValueList.find(item => {
+        return item.saleAttrValueName == saleAttrValue
+    })
+    if (repeat) {
+        ElMessage({
+            type: 'warning',
+            message: '属性值不能重复'
+        })
+        row.flag = false
+        return;
+    }
+    //追加
+    row.spuSaleAttrValueList.push(newSaleAttrValue)
+    //切换为查看模型
+    row.flag = false
+}
+//保存按钮
+const save = async () => {
+    //整理数据
+    //照片
+    SpuParams.value.spuImageList = uploadFileList.value.map((item: any) => {
+        return {
+            imgName: item.name,
+            imgUrl: (item.response && item.response.data) || item.url
+        }
+    })
+    //销售属性
+    SpuParams.value.spuSaleAttrList = saleAttr.value
+    //发请求
+    const result = await reqAddOrUpdateSpu(SpuParams.value)
+    if (result.code == 200) {
+        ElMessage({
+            type: 'success',
+            message: SpuParams.value.id ? '修改成功' : '添加成功'
+        })
+        //返回上一级
+        $emit('changeScene', 0)
+    } else {
+        ElMessage({
+            type: 'error',
+            message: SpuParams.value.id ? '修改失败' : '添加失败'
+        })
+    }
+}
+//添加一个SPU
+const initAddSpu = () => {
+    console.log(111111);
+}
 //对外暴露
 defineExpose({
-    initHasSpuData
+    initHasSpuData,
+    initAddSpu
 })
 </script>
 
