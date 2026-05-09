@@ -17,7 +17,7 @@
                         <el-table-column label="操作" width="250px">
                             <template v-slot="{ row }">
                                 <el-button type="primary" size="default" icon="Plus" title="添加SKU"
-                                    @click="addSku"></el-button>
+                                    @click="addSku(row)"></el-button>
                                 <el-button type="warning" size="default" icon="Edit" title="修改SPU"
                                     @click="updateSpu(row)"></el-button>
                                 <el-button type="info" size="default" icon="View" title="查看SKU列表"></el-button>
@@ -34,7 +34,7 @@
             <!-- 添加或修改spu -->
             <spuForm ref="spu" v-show="scene == 1" @change-scene="changeScene" />
             <!-- 添加SKU -->
-            <skuForm v-show="scene == 2" @change-scene="changeScene" />
+            <skuForm ref="sku" v-show="scene == 2" @change-scene="changeScene" />
         </el-card>
     </div>
 </template>
@@ -50,6 +50,7 @@ import spuForm from './spuForm.vue';
 import skuForm from './skuForm.vue';
 const categoryStore = useCategoryStore();
 const spu = ref<any>();
+const sku = ref<any>();
 //定义场景
 const scene = ref<number>(0);//0：显示已有SPU  1：添加或修改SPU 2：添加SKU
 //默认页码
@@ -110,8 +111,10 @@ const changeScene = ({ flag, params }: { flag: number; params: string }) => {
 
 }
 //添加SKU回调
-const addSku = () => {
+const addSku = (row: SpuData) => {
     scene.value = 2;
+    //调用子组件的方法初始化基础数据
+    sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, row)
 }
 //路由切换时清除数据
 onBeforeRouteLeave(() => {
