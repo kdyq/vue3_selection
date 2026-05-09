@@ -16,7 +16,8 @@
                         </el-table-column>
                         <el-table-column label="操作" width="250px">
                             <template v-slot="{ row }">
-                                <el-button type="primary" size="default" icon="Plus" title="添加SKU"></el-button>
+                                <el-button type="primary" size="default" icon="Plus" title="添加SKU"
+                                    @click="addSku"></el-button>
                                 <el-button type="warning" size="default" icon="Edit" title="修改SPU"
                                     @click="updateSpu(row)"></el-button>
                                 <el-button type="info" size="default" icon="View" title="查看SKU列表"></el-button>
@@ -33,12 +34,13 @@
             <!-- 添加或修改spu -->
             <spuForm ref="spu" v-show="scene == 1" @change-scene="changeScene" />
             <!-- 添加SKU -->
-            <skuForm v-show="scene == 2" />
+            <skuForm v-show="scene == 2" @change-scene="changeScene" />
         </el-card>
     </div>
 </template>
 
 <script setup lang="ts" name="spu">
+import { onBeforeRouteLeave } from 'vue-router'
 import { ref, watch } from 'vue';
 import { reqHasSpu } from '@/api/product/spu'
 import type { HasSpuResponseData, Records, SpuData } from '@/api/product/spu/type';
@@ -71,11 +73,12 @@ const getHasSpu = async (page = 1) => {
 watch(() => categoryStore.c3Id, () => {
     //清空SPU数据
     currentPage.value = 1;
-    total.value = 5;
+    total.value = 0;
+    records.value = [];
     if (categoryStore.c3Id) {
         getHasSpu();
     }
-})
+}, { immediate: true, deep: true })
 //改变每页显示的条数
 const changePageSize = () => {
     getHasSpu();
@@ -106,6 +109,20 @@ const changeScene = ({ flag, params }: { flag: number; params: string }) => {
     }
 
 }
+//添加SKU回调
+const addSku = () => {
+    scene.value = 2;
+}
+//路由切换时清除数据
+onBeforeRouteLeave(() => {
+    categoryStore.reset()
+
+    records.value = []
+    total.value = 0
+    currentPage.value = 1
+    pageSize.value = 3
+    scene.value = 0
+})
 </script>
 
 <style scoped></style>

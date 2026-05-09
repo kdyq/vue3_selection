@@ -44,6 +44,7 @@ const handler1 = () => {
     categoryStore.c2Id = ''
     categoryStore.c2Arr = []
     categoryStore.c3Id = ''
+    categoryStore.c3Arr = []
     //获取数据
     categoryStore.getC2();
 }
@@ -51,6 +52,7 @@ const handler1 = () => {
 const handler2 = () => {
     //清空三级分类数据
     categoryStore.c3Id = ''
+    categoryStore.c3Arr = []
     // 获取数据
     categoryStore.getC3();
 }

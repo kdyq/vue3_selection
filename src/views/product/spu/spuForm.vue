@@ -60,7 +60,7 @@
         <el-form-item>
             <el-button type="primary" size="default" @click="save"
                 :disabled="saleAttr.length > 0 ? false : true">保存</el-button>
-            <el-button size="default" @click="cansel">取消</el-button>
+            <el-button size="default" @click="cancel">取消</el-button>
 
         </el-form-item>
 
@@ -105,7 +105,7 @@ const diglogImageUrl = ref('')
 //存储未选择的销售属性的id和name
 const saleAttrId_Name = ref<string>('')
 //点击取消按钮
-const cansel = () => {
+const cancel = () => {
     $emit('changeScene', { flag: 0, params: SpuParams.value.id ? 'update' : 'add' })
 }
 //自定义方法，用于获取数据
