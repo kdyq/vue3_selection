@@ -1,14 +1,37 @@
 //引入清除样式
 @use  './reset.scss';
-//滚动条外观设置
-::-webkit-scrollbar{
-    width: 10px;
-}
-::-webkit-scrollbar-track{
-    background:whitesmoke;
-}
-::-webkit-scrollbar-thumb{
-    width: 10px;
-    background-color: yellow;
-    border-radius: 10px;
-}
+// 全局滚动条
+::-webkit-scrollbar {
+    width: 42px;
+  }
+  
+  // 滚动条轨道：中间一条竖线
+  ::-webkit-scrollbar-track {
+    background:
+      linear-gradient(
+        to right,
+        transparent 0,
+        transparent calc(50% - 1px),
+        #d6d6d6 calc(50% - 1px),
+        #d6d6d6 calc(50% + 1px),
+        transparent calc(50% + 1px),
+        transparent 100%
+      );
+  }
+  
+  // 滚动条滑块：小圆环 + 中心点
+  ::-webkit-scrollbar-thumb {
+    min-height: 42px;
+    border-radius: 999px;
+  
+    background:
+      radial-gradient(circle at center, #666 0 4px, transparent 5px),
+      radial-gradient(circle at center, transparent 0 13px, #999 14px 16px, transparent 17px);
+  }
+  
+  // 悬浮时更明显
+  ::-webkit-scrollbar-thumb:hover {
+    background:
+      radial-gradient(circle at center, #333 0 4px, transparent 5px),
+      radial-gradient(circle at center, transparent 0 13px, #666 14px 16px, transparent 17px);
+  }

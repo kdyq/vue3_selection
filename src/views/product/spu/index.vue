@@ -22,7 +22,11 @@
                                     @click="updateSpu(row)"></el-button>
                                 <el-button type="info" size="default" icon="View" title="查看SKU列表"
                                     @click="viewSku(row)"></el-button>
-                                <el-button type="danger" size="default" icon="Delete" title="删除SPU"></el-button>
+                                <el-popconfirm :title="`你确定删除${row.spuName}吗`" width="auto" @confirm="deleteSpu(row)">
+                                    <template #reference>
+                                        <el-button type="danger" size="default" icon="Delete" title="删除SPU"></el-button>
+                                    </template>
+                                </el-popconfirm>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -46,17 +50,18 @@
                         <template v-slot="{ row }">
                             <img :src="row.skuDefaultImg" alt="" style="width: 100px;height: 100px;">
                         </template>
-        </el-table-column>
-    </el-table>
-</el-dialog>
-</el-card>
-</div>
+                    </el-table-column>
+                </el-table>
+            </el-dialog>
+        </el-card>
+    </div>
 </template>
 
 <script setup lang="ts" name="spu">
 import { onBeforeRouteLeave } from 'vue-router'
+import { ElMessage } from 'element-plus';
 import { ref, watch } from 'vue';
-import { reqHasSpu, reqSkuList } from '@/api/product/spu'
+import { reqHasSpu, reqSkuList, reqRemoveSpu } from '@/api/product/spu'
 import type { HasSpuResponseData, Records, SpuData, SkuInfoData, SkuData } from '@/api/product/spu/type';
 import { useCategoryStore } from '@/store/modules/catrogry';
 //引入子组件
@@ -141,6 +146,17 @@ const viewSku = async (row: SpuData) => {
         skuArr.value = result.data
         //显示对话框
         show.value = true
+    }
+}
+//删除SPU
+const deleteSpu = async (row: SpuData) => {
+    const result: any = await reqRemoveSpu(row.id as number)
+    if (result.code == 200) {
+        ElMessage.success('删除成功')
+        getHasSpu(records.value.length > 1 ? currentPage.value : currentPage.value - 1)
+    }
+    else {
+        ElMessage.error('删除失败，请重试')
     }
 }
 //路由切换时清除数据
