@@ -76,6 +76,7 @@ export interface SaleAttr {
   spuSaleAttrValueList: SpuSaleAttrValueList
   flag?: boolean
   saleAttrValue?: string
+  saleIdAndValueId?: string
 }
 
 // SPU 已有的销售属性接口返回数据ts类型
