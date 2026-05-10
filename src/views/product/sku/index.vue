@@ -22,8 +22,13 @@
                         :icon="row.isSale == 1 ? 'Bottom' : 'Top'" :title="row.isSale == 1 ? '下架' : '上架'"
                         @click="changeSale(row)"></el-button>
                     <el-button type="warning" size="default" icon="Edit" title="更新" @click="updateSku"></el-button>
-                    <el-button type="success" size="default" icon="View" title="查看" @click="viewSku"></el-button>
-                    <el-button type="danger" size="default" icon="Delete" title="删除"></el-button>
+                    <el-button type="success" size="default" icon="View" title="查看" @click="viewSku(row)"></el-button>
+                    <el-popconfirm :title="`你确定删除 ${row.skuName} 吗`" width="auto" @confirm="deleteSku(row)">
+                        <template #reference>
+                            <el-button type="danger" size="default" icon="Delete" title="删除"></el-button>
+                        </template>
+                    </el-popconfirm>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -39,34 +44,36 @@
             <template #default>
                 <el-row style="margin-top: 10px;">
                     <el-col :span="6">名称</el-col>
-                    <el-col :span="18">华为</el-col>
+                    <el-col :span="18">{{ skuInfo?.skuName }}</el-col>
                 </el-row>
                 <el-row style="margin-top: 10px;">
                     <el-col :span="6">描述</el-col>
-                    <el-col :span="18">华为</el-col>
+                    <el-col :span="18">{{ skuInfo?.skuDesc }}</el-col>
                 </el-row>
                 <el-row style="margin-top: 10px;">
                     <el-col :span="6">价格</el-col>
-                    <el-col :span="18">6999</el-col>
+                    <el-col :span="18">{{ skuInfo?.price }}</el-col>
                 </el-row>
                 <el-row style="margin-top: 10px;">
                     <el-col :span="6">平台属性</el-col>
                     <el-col :span="18">
-                        <el-tag type="danger" v-for="i in 10" style="margin: 5px;">{{ i }}</el-tag>
+                        <el-tag type="danger" v-for="item in skuInfo?.skuAttrValueList" :key="item.id"
+                            style="margin: 5px;">{{ item.valueName }}</el-tag>
                     </el-col>
                 </el-row>
                 <el-row style="margin-top: 10px;">
                     <el-col :span="6">销售属性</el-col>
                     <el-col :span="18">
-                        <el-tag v-for="i in 10" style="margin: 5px;">{{ i }}</el-tag>
+                        <el-tag v-for="item in skuInfo?.skuSaleAttrValueList" :key="item.id" style="margin: 5px;">{{
+                            item.saleAttrValueName }}</el-tag>
                     </el-col>
                 </el-row>
                 <el-row style="margin-top: 10px;">
                     <el-col :span="6">商品图片</el-col>
                     <el-col :span="18">
                         <el-carousel :interval="4000" type="card" height="200px">
-                            <el-carousel-item v-for="item in 6" :key="item">
-                                <h3 text="2xl" justify="center">{{ item }}</h3>
+                            <el-carousel-item v-for="item in skuInfo?.skuImageList" :key="item.id">
+                                <img :src="item.imgUrl" alt="" style="height: 100%; width: 100%;">
                             </el-carousel-item>
                         </el-carousel>
                     </el-col>
@@ -81,8 +88,9 @@
 <script setup lang="ts" name="sku">
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus';
-import { reqSkuList, reqSaleSku, reqCancelSale } from '@/api/product/sku';
-import type { SkuResponseData, SkuData } from '@/api/product/sku/type';
+import { reqSkuList, reqSaleSku, reqCancelSale, reqSkuInfo, reqRemoveSku } from '@/api/product/sku';
+import type { SkuResponseData, SkuData, SkuInfoData } from '@/api/product/sku/type';
+import { sk } from 'element-plus/es/locale/index.mjs';
 //默认页码
 const currentPage = ref<number>(1);
 //默认每页显示的条数
@@ -93,6 +101,8 @@ const total = ref<number>(0);
 const skuArr = ref<SkuData[]>([])
 //控制抽屉组件的显示与隐藏
 const drawer = ref<boolean>(false)
+//存储sku详情信息
+const skuInfo = ref<SkuData>()
 //组件挂载完毕
 onMounted(() => {
     getHasSku();
@@ -128,8 +138,19 @@ const updateSku = () => {
     ElMessage.warning('此功能正在开发中...')
 }
 //查看商品详情
-const viewSku = () => {
+const viewSku = async (row: SkuData) => {
     drawer.value = true
+    //获取SKU详情数据
+    const result: SkuInfoData = await reqSkuInfo(row.id as number)
+    skuInfo.value = result.data
+}
+//删除sku
+const deleteSku = async (row: SkuData) => {
+    const result = await reqRemoveSku(row.id as number)
+    if (result.code == 200) {
+        ElMessage.success('删除成功')
+        getHasSku(skuArr.value.length > 1 ? currentPage.value : currentPage.value - 1)
+    }
 }
 </script>
 
