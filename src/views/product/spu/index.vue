@@ -20,7 +20,8 @@
                                     @click="addSku(row)"></el-button>
                                 <el-button type="warning" size="default" icon="Edit" title="修改SPU"
                                     @click="updateSpu(row)"></el-button>
-                                <el-button type="info" size="default" icon="View" title="查看SKU列表"></el-button>
+                                <el-button type="info" size="default" icon="View" title="查看SKU列表"
+                                    @click="viewSku(row)"></el-button>
                                 <el-button type="danger" size="default" icon="Delete" title="删除SPU"></el-button>
                             </template>
                         </el-table-column>
@@ -35,15 +36,28 @@
             <spuForm ref="spu" v-show="scene == 1" @change-scene="changeScene" />
             <!-- 添加SKU -->
             <skuForm ref="sku" v-show="scene == 2" @change-scene="changeScene" />
-        </el-card>
-    </div>
+            <!-- dialog对话框，展示已有的sku数据 -->
+            <el-dialog v-model="show" title="SKU列表">
+                <el-table border stripe :data="skuArr">
+                    <el-table-column label="名称" prop="skuName"></el-table-column>
+                    <el-table-column label="价格" prop="price"></el-table-column>
+                    <el-table-column label="重量" prop="weight"></el-table-column>、
+                    <el-table-column label="图片">
+                        <template v-slot="{ row }">
+                            <img :src="row.skuDefaultImg" alt="" style="width: 100px;height: 100px;">
+                        </template>
+        </el-table-column>
+    </el-table>
+</el-dialog>
+</el-card>
+</div>
 </template>
 
 <script setup lang="ts" name="spu">
 import { onBeforeRouteLeave } from 'vue-router'
 import { ref, watch } from 'vue';
-import { reqHasSpu } from '@/api/product/spu'
-import type { HasSpuResponseData, Records, SpuData } from '@/api/product/spu/type';
+import { reqHasSpu, reqSkuList } from '@/api/product/spu'
+import type { HasSpuResponseData, Records, SpuData, SkuInfoData, SkuData } from '@/api/product/spu/type';
 import { useCategoryStore } from '@/store/modules/catrogry';
 //引入子组件
 import spuForm from './spuForm.vue';
@@ -61,6 +75,10 @@ const pageSize = ref<number>(3);
 const total = ref<number>(0);
 // 存储已有的SPU数据
 const records = ref<Records>([])
+//存储SKU
+const skuArr = ref<SkuData[]>([])
+//控制dialog的显示与隐藏
+const show = ref<boolean>(false)
 //获取某个三级分类下的SPU列表
 const getHasSpu = async (page = 1) => {
     currentPage.value = page;
@@ -115,6 +133,15 @@ const addSku = (row: SpuData) => {
     scene.value = 2;
     //调用子组件的方法初始化基础数据
     sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, row)
+}
+//查看SKU列表
+const viewSku = async (row: SpuData) => {
+    const result: SkuInfoData = await reqSkuList(row.id as number)
+    if (result.code == 200) {
+        skuArr.value = result.data
+        //显示对话框
+        show.value = true
+    }
 }
 //路由切换时清除数据
 onBeforeRouteLeave(() => {
