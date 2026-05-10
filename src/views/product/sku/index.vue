@@ -18,9 +18,11 @@
             </el-table-column>
             <el-table-column label="操作" width="300px" fixed="right">
                 <template v-slot="{ row }">
-                    <el-button type="primary" size="default" icon="Top" title="上架/下架"></el-button>
-                    <el-button type="warning" size="default" icon="Edit" title="编辑"></el-button>
-                    <el-button type="info" size="default" icon="View" title="查看"></el-button>
+                    <el-button :type="row.isSale == 1 ? 'info' : 'primary'" size="default"
+                        :icon="row.isSale == 1 ? 'Bottom' : 'Top'" :title="row.isSale == 1 ? '下架' : '上架'"
+                        @click="changeSale(row)"></el-button>
+                    <el-button type="warning" size="default" icon="Edit" title="更新" @click="updateSku"></el-button>
+                    <el-button type="success" size="default" icon="View" title="查看"></el-button>
                     <el-button type="danger" size="default" icon="Delete" title="删除"></el-button>
                 </template>
             </el-table-column>
@@ -36,7 +38,8 @@
 
 <script setup lang="ts" name="sku">
 import { ref, onMounted } from 'vue'
-import { reqSkuList } from '@/api/product/sku';
+import { ElMessage } from 'element-plus';
+import { reqSkuList, reqSaleSku, reqCancelSale } from '@/api/product/sku';
 import type { SkuResponseData, SkuData } from '@/api/product/sku/type';
 //默认页码
 const currentPage = ref<number>(1);
@@ -61,6 +64,24 @@ const getHasSku = async (page = 1) => {
 //改变每页显示的条数
 const changePageSize = () => {
     getHasSku();
+}
+//改变SKU上架与下架
+const changeSale = async (row: SkuData) => {
+    //isSale=1表示以上架，isSale=0表示已下架
+    if (row.isSale == 1) {
+        await reqCancelSale(row.id as number)
+        ElMessage.success('下架成功')
+        //重新获取数据
+        getHasSku(currentPage.value)
+    } else {
+        await reqSaleSku(row.id as number)
+        ElMessage.success('上架成功')
+        getHasSku(currentPage.value)
+    }
+}
+//更新SKU
+const updateSku = () => {
+    ElMessage.warning('此功能正在开发中...')
 }
 </script>
 
