@@ -96,6 +96,18 @@ const cancel = () => {
 }
 //对外暴露初始化数据的方法
 const initSkuData = async (c1Id: number | string, c2Id: number | string, spu: SpuData) => {
+    //清空数据
+    Object.assign(skuParmas, {
+        category3Id: '',//三级分类ID
+        spuId: '',//spu的ID
+        tmId: '',//品牌ID
+        skuName: '',//sku名称
+        price: '',//sku价格
+        weight: '',//sku重量
+        skuDesc: '',//sku描述
+        skuAttrValueList: [],//平台属性
+        skuSaleAttrValueList: [],//销售属性
+    })
     //获取平台属性
     const attr: AttrResponseData = await reqAttr(c1Id, c2Id, spu.category3Id)
     //获取销售属性
