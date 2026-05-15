@@ -47,7 +47,7 @@
     <!-- 抽屉结构 -->
     <el-drawer v-model="drawer">
         <template #header>
-            <h4>添加用户</h4>
+            <h4>{{ userParams.id ? '修改用户信息' : '添加用户' }}</h4>
         </template>
         <template #default>
             <div>
@@ -58,7 +58,7 @@
                     <el-form-item label="用户昵称:" style="margin: 15px 0px;" prop="name">
                         <el-input placeholder="请输入用户昵称" v-model="userParams.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="账号密码:" style="margin: 15px 0px;" prop="password">
+                    <el-form-item label="账号密码:" style="margin: 15px 0px;" prop="password" v-if="!userParams.id">
                         <el-input placeholder="请输入账号密码" v-model="userParams.password"></el-input>
                     </el-form-item>
                 </el-form>
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts" name="user">
-import { ref, onMounted, reactive,nextTick } from 'vue'
+import { ref, onMounted, reactive, nextTick } from 'vue'
 import { ElMessage } from 'element-plus';
 import { reqUserList, reqAddOrUpdateUser } from '@/api/acl/user';
 import type { UserResponseData, Records, User } from '@/api/acl/user/type';
@@ -118,6 +118,7 @@ const handler = () => {
 const addUser = () => {
     drawer.value = true
     Object.assign(userParams, {
+        id: 0,
         username: '',
         name: '',
         password: '',
@@ -130,6 +131,13 @@ const addUser = () => {
 //编辑用户信息
 const editUser = (row: User) => {
     drawer.value = true
+    //收集已有的信息
+    Object.assign(userParams, row)
+    //清空错误提示
+    nextTick(() => {
+        formRef.value.clearValidate('username')
+        formRef.value.clearValidate('name')
+    })
 }
 //保存按钮
 const save = async () => {
@@ -137,9 +145,15 @@ const save = async () => {
     await formRef.value.validate()
     const result: any = await reqAddOrUpdateUser(userParams)
     if (result.code === 200) {
-        getHasUser()
+        getHasUser(userParams.id ? currentPage.value : 1)
         drawer.value = false
         ElMessage.success(userParams.id ? '修改成功' : '添加成功')
+        //如果修改当前正在使用的账户,需要重新登陆,延迟1秒
+        if (userParams.id) {
+            setTimeout(() => {
+                window.location.reload()
+            }, 1000)
+        }
     } else {
         drawer.value = false
         ElMessage.success(userParams.id ? '修改失败,请检查信息' : '添加失败,请检查信息')
