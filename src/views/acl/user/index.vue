@@ -13,9 +13,10 @@
         </el-card>
         <el-card style="margin-top: 10px;">
             <el-button type="primary" size="default" @click="addUser">添加</el-button>
-            <el-button type="danger" size="default">批量删除</el-button>
+            <el-button type="danger" size="default" :disabled="selectedArr.length > 0 ? false : true"
+                @click="removeBatchUser">批量删除</el-button>
             <!-- table展示用户信息 -->
-            <el-table style="margin: 10px 0px" border :data="userArr">
+            <el-table @selection-change="selectChange" style="margin: 10px 0px" border :data="userArr">
                 <el-table-column type="selection" align="center"></el-table-column>
                 <el-table-column label="#" align="center" type="index"></el-table-column>
                 <el-table-column label="ID" align="center" prop="id" width="150px"></el-table-column>
@@ -32,7 +33,7 @@
                         <el-button type="warning" size="small" icon="Edit" @click="editUser(row)">
                             编辑
                         </el-button>
-                        <el-popconfirm :title="`确定删除这个用户吗？`" width="260px">
+                        <el-popconfirm :title="`确定删除这个用户吗？`" width="260px" @confirm="removeUser(row.id)">
                             <template #reference>
                                 <el-button type="danger" size="small" icon="Delete">删除</el-button>
                             </template>
@@ -119,7 +120,7 @@
 import { ref, onMounted, reactive, nextTick } from 'vue'
 import { ElMessage } from 'element-plus';
 import type { CheckboxValueType } from 'element-plus'
-import { reqUserList, reqAddOrUpdateUser, reqAllRole, reqSetUserRole } from '@/api/acl/user';
+import { reqUserList, reqAddOrUpdateUser, reqAllRole, reqSetUserRole, reqRemoveUser, reqRemoveBatchUser } from '@/api/acl/user';
 import type { UserResponseData, Records, User, AllRoleResponseData, AllRole, SetRoleData } from '@/api/acl/user/type';
 //默认页码
 const currentPage = ref<number>(1);
@@ -143,6 +144,8 @@ const userRoleIds = ref<number[]>([])
 const checkAll = ref(false)
 //控制全选复选框不确定样式
 const isIndeterminate = ref(true)
+//选中的用户
+const selectedArr = ref<User[]>([])
 //存储新增或修改的用户信息
 const userParams = reactive<User>({
     username: '',
@@ -208,7 +211,7 @@ const save = async () => {
         }
     } else {
         drawer.value = false
-        ElMessage.success(userParams.id ? '修改失败,请检查信息' : '添加失败,请检查信息')
+        ElMessage.error(userParams.id ? '修改失败,请检查信息' : '添加失败,请检查信息')
     }
 }
 //取消按钮
@@ -320,6 +323,44 @@ const saveRole = async () => {
 //取消分配职位
 const cancelRole = () => {
     drawer1.value = false
+}
+//删除某个用户
+const removeUser = async (userid: number) => {
+    if (userid === 1) {
+        ElMessage.error('超级管理员不能删除')
+        return
+    }
+    const result: any = await reqRemoveUser(userid)
+    if (result.code === 200) {
+        ElMessage.success('删除成功')
+        getHasUser(userArr.value.length > 1 ? currentPage.value : currentPage.value - 1)
+    } else {
+        ElMessage.error('删除失败,请检查接口或信息')
+    }
+}
+//复选框勾选
+const selectChange = (value: any) => {
+    selectedArr.value = value
+}
+//批量删除
+const removeBatchUser = async () => {
+    const idList: number[] = selectedArr.value.map(item => item.id as number)
+    if (idList.length === 0) {
+        ElMessage.error('请选择要删除的用户')
+        return
+    }
+    //不能删除超级管理员
+    if (idList.includes(1)) {
+        ElMessage.error('超级管理员不能删除')
+        return
+    }
+    const result: any = await reqRemoveBatchUser(idList)
+    if (result.code === 200) {
+        ElMessage.success('批量删除成功')
+        getHasUser(userArr.value.length > selectedArr.value.length ? currentPage.value : currentPage.value - 1)
+    } else {
+        ElMessage.error('批量删除失败,请检查接口或信息')
+    }
 }
 </script>
 
