@@ -88,14 +88,14 @@
                         <el-form-item style="margin: 10px 0px;">
                             <div class="role-box">
                                 <span class="role-label">职位列表:</span>
-
                                 <div class="role-content">
                                     <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate"
-                                        @change="handleCheckAllChange">
+                                        @change="handleCheckAllChange" class="check-all">
                                         全选
                                     </el-checkbox>
 
-                                    <el-checkbox-group v-model="userRoleIds" @change="handleCheckedCitiesChange">
+                                    <el-checkbox-group v-model="userRoleIds" @change="handleCheckedCitiesChange"
+                                        class="role-grid">
                                         <el-checkbox v-for="i in allRole" :key="i.id" :value="i.id">
                                             {{ i.roleName }}
                                         </el-checkbox>
@@ -368,7 +368,7 @@ const removeBatchUser = async () => {
 //搜索
 const search = async () => {
     getHasUser()
-    keyword.value = '' 
+    keyword.value = ''
 }
 //重置
 const reset = () => {
@@ -385,12 +385,36 @@ const reset = () => {
 }
 
 .role-label {
-    width: 70px;
+    width: 80px;
     line-height: 32px;
+    flex-shrink: 0;
     color: #606266;
 }
 
 .role-content {
     flex: 1;
+    min-width: 0;
+}
+
+.check-all {
+    margin-bottom: 10px;
+}
+
+.role-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+}
+
+:deep(.role-grid .el-checkbox) {
+    margin-right: 0;
+    width: 130px;
+}
+
+:deep(.role-grid .el-checkbox__label) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>
