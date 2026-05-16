@@ -77,7 +77,7 @@ export const constantRoute: RouteRecordRaw[] = [
         component: () => import('@/views/acl/ruler/index.vue'),
         name: 'RulerAcl',
         meta: {
-          title: '角色管理',
+          title: '职位管理',
           hidden: false,
           icon: 'User',
         },

@@ -368,7 +368,7 @@ const removeBatchUser = async () => {
 //搜索
 const search = async () => {
     getHasUser()
-    keyword.value = ''
+    keyword.value = '' 
 }
 //重置
 const reset = () => {
