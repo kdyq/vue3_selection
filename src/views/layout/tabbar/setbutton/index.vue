@@ -9,7 +9,8 @@
     <el-tooltip content="设置" placement="bottom">
         <el-button size="default" icon="Setting" circle></el-button>
     </el-tooltip>
-    <img :src="userStore.avatar" style="width: 32px; height: 32px; margin: 0 10px; border-radius: 50%;">
+    <img :src="userStore.avatar ? userStore.avatar : '../../../../../public/touxiang.png'"
+        style="width: 32px; height: 32px; margin: 0 10px; border-radius: 50%;">
     <!-- 下拉菜单 -->
     <el-dropdown>
         <span class="el-dropdown-link">

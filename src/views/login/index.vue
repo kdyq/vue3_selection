@@ -39,7 +39,7 @@ import type { FormItemRule } from 'element-plus'
 const userStore = useUserStore();
 const router = useRouter()
 //收集表单数据
-let LoginForm = reactive({ username: 'admin', password: '111111' })
+let LoginForm = reactive({ username: '', password: '' })
 let loading = ref(false)
 let loginForms = ref()
 //登录回调
