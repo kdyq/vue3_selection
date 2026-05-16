@@ -13,7 +13,7 @@
             </el-form>
         </el-card>
         <el-card style="margin: 10px 0px">
-            <el-button type="primary" size="default" icon="Plus">添加职位</el-button>
+            <el-button type="primary" size="default" icon="Plus" @click="addRole">添加职位</el-button>
             <el-table border style="margin: 10px 0px" :data="allRole">
                 <el-table-column type="index" align="center" label="#"></el-table-column>
                 <el-table-column align="center" label="id" prop="id"></el-table-column>
@@ -26,7 +26,7 @@
                         <el-button type="primary" size="small" icon="User">
                             分配权限
                         </el-button>
-                        <el-button type="warning" size="small" icon="Edit">
+                        <el-button type="warning" size="small" icon="Edit" @click="EditRole(row)">
                             编辑
                         </el-button>
                         <el-popconfirm title="确定删除这个职位吗" width="260px">
@@ -42,24 +42,25 @@
                 @current-change="getHasRole" @size-change="sizeChange" />
         </el-card>
         <!-- 添加职位与更新已有职位 -->
-        <el-dialog>
-            <el-form>
-                <el-form-item label="职位名称" prop="roleName">
-                    <el-input placeholder="请输入职位名称"></el-input>
+        <el-dialog v-model="dialogVisible" :title="RoleParams.id ? '修改职位' : '添加职位'">
+            <el-form style="margin-top: 30px;" :model="RoleParams" :rules="rules" ref="roleForm">
+                <el-form-item label="职位名称：" prop="roleName">
+                    <el-input placeholder="请输入职位名称" v-model="RoleParams.roleName" style="height: 35px; "></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
-                <el-button type="primary" size="default">取消</el-button>
-                <el-button type="primary" size="default">保存</el-button>
+                <el-button size="default" @click="dialogVisible = false">取消</el-button>
+                <el-button type="primary" size="default" @click="save">保存</el-button>
             </template>
         </el-dialog>
     </div>
 </template>
 
 <script setup lang="ts" name="roler">
-import { ref, onMounted } from 'vue'
-import { reqAllRoleList } from '@/api/acl/role';
-import type { RoleResponseData, Records } from '@/api/acl/role/type';
+import { ref, onMounted, reactive, nextTick } from 'vue'
+import { ElMessage } from 'element-plus'
+import { reqAllRoleList, reqAddOrUpdateRole } from '@/api/acl/role';
+import type { RoleResponseData, Records, RoleData } from '@/api/acl/role/type';
 //默认页码
 const currentPage = ref<number>(1);
 //默认每页显示的条数
@@ -68,6 +69,14 @@ const pageSize = ref<number>(8);
 const total = ref<number>(0);
 //搜索关键字
 const keyword = ref('')
+//控制对话框的显示与隐藏
+const dialogVisible = ref<boolean>(false)
+//获取表单组件实例
+const roleForm = ref<any>()
+//收集新增岗位的数据
+const RoleParams = reactive<RoleData>({
+    roleName: '',
+})
 //存储所有职位列表
 const allRole = ref<Records>([])
 onMounted(() => {
@@ -97,6 +106,54 @@ const getHasRole = async (page = 1) => {
     }
 
 }
+//添加职位
+const addRole = () => {
+    dialogVisible.value = true
+    Object.assign(RoleParams, {
+        id: '',
+        roleName: '',
+    })
+    //清空校验
+    nextTick(() => {
+        roleForm.value.clearValidate('roleName')
+    })
+}
+// 编辑职位
+const EditRole = (row: RoleData) => {
+    dialogVisible.value = true
+    Object.assign(RoleParams, row)
+    //清空校验
+    nextTick(() => {
+        roleForm.value.clearValidate('roleName')
+    })
+}
+//保存职位
+const save = async () => {
+    await roleForm.value.validate()
+    //添加或更新职位
+    const result: any = await reqAddOrUpdateRole(RoleParams)
+    if (result.code === 200) {
+        ElMessage.success(RoleParams.id ? '修改职位成功' : '添加职位成功')
+        dialogVisible.value = false
+        getHasRole(RoleParams.id ? currentPage.value : 1)
+    } else {
+        ElMessage.error(RoleParams.id ? '修改职位失败,请检查接口或信息' : '添加职位失败,请检查接口或信息')
+        dialogVisible.value = false
+    }
+
+}
+//添加职位表单校验
+const rules = {
+    roleName: [
+        { required: true, message: '请输入职位名称', trigger: 'blur' },
+        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+        {
+            pattern: /^\S+$/,
+            message: '职位名不能包含空格',
+            trigger: 'blur'
+        }
+    ]
+} 
 </script>
 
 <style scoped></style>
