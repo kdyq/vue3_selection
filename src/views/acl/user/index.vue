@@ -20,13 +20,13 @@
             <el-table-column label="ID" align="center" prop="id" width="150px"></el-table-column>
             <el-table-column label="用户名" align="center" show-overflow-tooltip prop="username"></el-table-column>
             <el-table-column label="用户昵称" align="center" show-overflow-tooltip prop="name"></el-table-column>
-            <el-table-column label="用户角色" align="center" show-overflow-tooltip prop="roleName"></el-table-column>
+            <el-table-column label="用户职位" align="center" show-overflow-tooltip prop="roleName"></el-table-column>
             <el-table-column label="创建时间" align="center" show-overflow-tooltip prop="createTime"></el-table-column>
             <el-table-column label="更新时间" align="center" show-overflow-tooltip prop="updateTime"></el-table-column>
             <el-table-column label="操作" width="300px" align="center">
                 <template v-slot="{ row }">
-                    <el-button type="primary" size="small" icon="User">
-                        分配角色
+                    <el-button type="primary" size="small" icon="User" @click="assignRole(row)">
+                        分配职位
                     </el-button>
                     <el-button type="warning" size="small" icon="Edit" @click="editUser(row)">
                         编辑
@@ -71,6 +71,37 @@
             </div>
         </template>
     </el-drawer>
+    <!-- 分配角色抽屉 -->
+    <el-drawer v-model="drawer1">
+        <template #header>
+            <h4>分配职位</h4>
+        </template>
+        <template #default>
+            <div>
+                <el-form label-width="auto">
+                    <el-form-item label="用户名:" style="margin: 10px 0px;">
+                        <el-input v-model="userParams.username" :disabled="true"></el-input>
+                    </el-form-item>
+                    <el-form-item label="职位列表:" style="margin: 10px 0px;">
+                        <el-checkbox>
+                            全选
+                        </el-checkbox>
+                        <el-checkbox-group>
+                            <el-checkbox v-for="i in 10" :key="i" :label="i" :value="i">
+                                {{ i }}
+                            </el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </template>
+        <template #footer>
+            <div style="flex: auto;">
+                <el-button type="primary" size="default">保存</el-button>
+                <el-button size="default" >取消</el-button>
+            </div>
+        </template>
+    </el-drawer>
 
 </template>
 
@@ -89,6 +120,7 @@ const total = ref<number>(0);
 const userArr = ref<Records>([])
 //控制抽屉的显示与隐藏
 const drawer = ref<boolean>(false)
+const drawer1 = ref<boolean>(false)
 //获取组件实例
 const formRef = ref<any>()
 //存储新增或修改的用户信息
@@ -192,6 +224,11 @@ const rules = {
             trigger: 'blur'
         }
     ]
+}
+//分配角色
+const assignRole = (row: User) => {
+    drawer1.value = true
+    Object.assign(userParams, row)
 }
 
 </script>
