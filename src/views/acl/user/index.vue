@@ -3,11 +3,12 @@
         <el-card>
             <el-form :inline="true" style="margin-top: 18px;">
                 <el-form-item label="用户名:">
-                    <el-input placeholder="请输入用户名"></el-input>
+                    <el-input placeholder="请输入用户名" v-model="keyword"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" size="default">搜索</el-button>
-                    <el-button type="default" size="default">重置</el-button>
+                    <el-button type="primary" size="default" :disabled="keyword ? false : true"
+                        @click="search">搜索</el-button>
+                    <el-button type="default" size="default" @click="reset">重置</el-button>
                 </el-form-item>
             </el-form>
         </el-card>
@@ -146,6 +147,8 @@ const checkAll = ref(false)
 const isIndeterminate = ref(true)
 //选中的用户
 const selectedArr = ref<User[]>([])
+//收集用户输入的关键字
+const keyword = ref('')
 //存储新增或修改的用户信息
 const userParams = reactive<User>({
     username: '',
@@ -159,7 +162,7 @@ onMounted(() => {
 //获取已有用户列表数据
 const getHasUser = async (page = 1) => {
     currentPage.value = page;
-    const result: UserResponseData = await reqUserList(currentPage.value, pageSize.value, '')
+    const result: UserResponseData = await reqUserList(currentPage.value, pageSize.value, keyword.value)
     if (result.code === 200) {
         total.value = result.data.total
         userArr.value = result.data.records
@@ -361,6 +364,16 @@ const removeBatchUser = async () => {
     } else {
         ElMessage.error('批量删除失败,请检查接口或信息')
     }
+}
+//搜索
+const search = async () => {
+    getHasUser()
+    keyword.value = ''
+}
+//重置
+const reset = () => {
+    keyword.value = ''
+    getHasUser()
 }
 </script>
 
