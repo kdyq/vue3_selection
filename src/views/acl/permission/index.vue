@@ -7,7 +7,7 @@
             <el-table-column label="操作">
                 <template v-slot="{ row }">
                     <el-button type="primary" size="small" icon="User" :disabled="row.level === 4 ? true : false"
-                        @click="addPermission">
+                        @click="addPermission(row)">
                         {{ row.level === 3 ? '添加功能' : '添加菜单' }}
                     </el-button>
                     <el-button type="warning" size="small" icon="Edit" :disabled="row.level === 1 ? true : false"
@@ -24,13 +24,13 @@
             </el-table-column>
         </el-table>
         <!-- 添加或编辑的dialog组件 -->
-        <el-dialog v-model="dialogVisible" title="添加" width="30%">
+        <el-dialog v-model="dialogVisible" :title="menuData.id ? '编辑' : '添加'" width="30%">
             <el-form style="margin-top: 30px;" label-width="80px">
                 <el-form-item label="名称：">
-                    <el-input placeholder="请输入名称"></el-input>
+                    <el-input placeholder="请输入名称" v-model="menuData.name"></el-input>
                 </el-form-item>
                 <el-form-item label="权限值：">
-                    <el-input placeholder="请输入权限值"></el-input>
+                    <el-input placeholder="请输入权限值" v-model="menuData.code"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -42,13 +42,21 @@
 </template>
 
 <script setup lang="ts" name="permission">
-import { ref, onMounted } from 'vue'
-import { reqAllPermisson } from '@/api/acl/menu/index'
-import type { PermissionResponsData, PermissionList, Permission } from '@/api/acl/menu/type';
+import { ref, onMounted, reactive } from 'vue'
+import { ElMessage } from 'element-plus';
+import { reqAllPermisson, reqAddOrUpdateMenu } from '@/api/acl/menu/index'
+import type { PermissionResponsData, PermissionList, Permission, MenuParams } from '@/api/acl/menu/type';
 //存储已有的菜单数据
 const permissionArr = ref<PermissionList>([])
 //控制添加或修改的dialog组件的显示与隐藏
 const dialogVisible = ref(false)
+//携带的参数
+const menuData = reactive<MenuParams>({
+    code: '',
+    level: 0,
+    name: '',
+    pid: 0
+})
 onMounted(() => {
     getHasPermission()
 })
@@ -60,16 +68,42 @@ const getHasPermission = async () => {
     }
 }
 //添加
-const addPermission = () => {
+const addPermission = (row: Permission) => {
+    //清空数据
+    Object.assign(menuData, {
+        code: '',
+        level: 0,
+        name: '',
+        pid: 0,
+        id: 0
+    })
     dialogVisible.value = true
+    //收集新增的level值
+    menuData.level = row.level + 1
+    //收集新增的pid值
+    menuData.pid = row.id as number
 }
 //编辑
 const editPermission = (row: Permission) => {
+    Object.assign(menuData, {
+        code: '',
+        level: 0,
+        name: '',
+        pid: 0,
+        id: 0
+    })
+    Object.assign(menuData, row)
     dialogVisible.value = true
 }
 //保存菜单
-const save = () => {
-    dialogVisible.value = false
+const save = async () => {
+    const result: any = await reqAddOrUpdateMenu(menuData)
+    if (result.code === 200) {
+        ElMessage.success(menuData.id ? '修改成功' : '添加成功')
+        getHasPermission()
+        dialogVisible.value = false
+    }
+
 }
 </script>
 
