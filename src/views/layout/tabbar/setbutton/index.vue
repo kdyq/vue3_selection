@@ -10,7 +10,8 @@
         <!-- 表单元素 -->
         <el-form label-width="80px">
             <el-form-item label="主题颜色">
-                <el-color-picker v-model="color" size="small" show-alpha :predefine="predefineColors" />
+                <el-color-picker @change="setColor" v-model="color" size="small" show-alpha :predefine="predefineColors"
+                    :teleported="false" />
             </el-form-item>
             <el-form-item label="暗黑模式">
                 <el-switch @change="changeDark" v-model="dark" size="default" active-icon="MoonNight"
@@ -96,6 +97,13 @@ const changeDark = () => {
     const html = document.documentElement
     //根据dark添加类名
     dark.value ? html.className = 'dark' : html.className = ''
+}
+//主题颜色设置
+const setColor = () => {
+    //获取html根节点
+    const html = document.documentElement
+    //设置主题颜色
+    html.style.setProperty('--el-color-primary', color.value)
 }
 </script>
 
