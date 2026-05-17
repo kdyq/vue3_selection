@@ -14,7 +14,8 @@
                         @click="editPermission(row)">
                         编辑
                     </el-button>
-                    <el-popconfirm title="确定删除这个吗" width="260px">
+                    <el-popconfirm :title="`确定删除这个${row.level === 4 ? '功能' : '菜单'} 吗`" width="260px"
+                        @confirm="removeMenu(row.id)">
                         <template #reference>
                             <el-button type="danger" size="small" icon="Delete"
                                 :disabled="row.level === 1 ? true : false">删除</el-button>
@@ -44,7 +45,7 @@
 <script setup lang="ts" name="permission">
 import { ref, onMounted, reactive } from 'vue'
 import { ElMessage } from 'element-plus';
-import { reqAllPermisson, reqAddOrUpdateMenu } from '@/api/acl/menu/index'
+import { reqAllPermisson, reqAddOrUpdateMenu, reqRemoveMenu } from '@/api/acl/menu/index'
 import type { PermissionResponsData, PermissionList, Permission, MenuParams } from '@/api/acl/menu/type';
 //存储已有的菜单数据
 const permissionArr = ref<PermissionList>([])
@@ -102,8 +103,21 @@ const save = async () => {
         ElMessage.success(menuData.id ? '修改成功' : '添加成功')
         getHasPermission()
         dialogVisible.value = false
+    } else {
+        ElMessage.error(menuData.id ? '修改失败,请检查接口或信息' : '添加失败,请检查接口或信息')
+        dialogVisible.value = false
     }
 
+}
+//删除
+const removeMenu = async (id: number) => {
+    const result: any = await reqRemoveMenu(id)
+    if (result.code === 200) {
+        ElMessage.success('删除成功')
+        getHasPermission()
+    } else {
+        ElMessage.error('删除失败,请检查接口或信息')
+    }
 }
 </script>
 
