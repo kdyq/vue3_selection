@@ -5,7 +5,14 @@
                 <Top></Top>
             </div>
             <div class="bottom">
-                <div class="left">左侧</div>
+                <div class="left">
+                    <!-- 游客组件 -->
+                    <Tourist class="tourist"></Tourist>
+                    <!-- 性别组件 -->
+                    <Sex class="sex"></Sex>
+                    <!-- 年龄组件 -->
+                    <Age class="age"></Age>
+                </div>
                 <div class="content">内容</div>
                 <div class="right">右侧</div>
             </div>
@@ -16,6 +23,9 @@
 <script setup lang="ts" name="screen">
 import { ref, onMounted, onUnmounted } from 'vue'
 import Top from './components/top/index.vue'
+import Tourist from './components/left/tourist/index.vue'
+import Sex from './components/left/sex/index.vue'
+import Age from './components/left/age/index.vue'
 const screen = ref()
 let timer: ReturnType<typeof setTimeout> | null = null
 
@@ -77,6 +87,21 @@ onUnmounted(() => {
 
             .left {
                 flex: 1;
+                height: 1040px;
+                display: flex;
+                flex-direction: column;
+
+                .tourist {
+                    flex: 1.3;
+                }
+
+                .sex {
+                    flex: 1;
+                }
+
+                .age {
+                    flex: 1;
+                }
             }
 
             .content {

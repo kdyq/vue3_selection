@@ -16,3 +16,5 @@ declare interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 declare module 'nprogress'
+declare module 'echarts-liquidfill'
+declare module 'echarts-liquidfill/dist/echarts-liquidfill.js'
