@@ -116,7 +116,7 @@ onUnmounted(() => {
                 overflow: hidden;
 
                 .map {
-                    flex: 4.5; // 可以稍微大一点
+                    flex: 4; // 可以稍微大一点
                     width: 100%;
                     min-height: 0;
                     pointer-events: auto;
@@ -125,7 +125,7 @@ onUnmounted(() => {
                 }
 
                 .line {
-                    flex: 1;
+                    flex: 1.1;
                     width: 100%;
                     min-height: 0;
                     position: relative;
@@ -134,7 +134,7 @@ onUnmounted(() => {
             }
 
             .right {
-                flex: 0.8; // 右侧变窄，中间地图变宽
+                flex: 1; // 右侧变窄，中间地图变宽
                 height: 1040px;
                 position: relative;
                 z-index: 20;
