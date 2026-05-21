@@ -19,7 +19,6 @@
             <p>女士42%</p>
         </div>
         <div class="bar" ref="bar">
-
         </div>
     </div>
 </template>
@@ -125,7 +124,7 @@ onMounted(() => {
     height: 100%;
     background: url(../../../images/dataScreen-main-cb.png) no-repeat;
     background-size: 100% 100%;
-    margin: 15px 0;
+    margin: 25px 0;
 
     .top {
         margin-left: 20px;
