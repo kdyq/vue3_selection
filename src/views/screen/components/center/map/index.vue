@@ -467,12 +467,13 @@ onBeforeUnmount(() => {
     position: absolute;
     inset: 0;
     z-index: 2;
+    margin-top: 20px;
 }
 
 /* 顶部平台高峰预警信息 */
 .warn-bar {
     position: absolute;
-    top: 33px;
+    margin-top: 15px;
     left: 50%;
     z-index: 5;
     width: 360px;
@@ -512,7 +513,7 @@ onBeforeUnmount(() => {
 .map-title {
     margin-top: 30px;
     position: absolute;
-    top: 82px;
+    top: 50px;
     left: 52px;
     z-index: 5;
     width: 250px;
