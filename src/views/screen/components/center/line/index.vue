@@ -8,7 +8,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="screen-line">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import * as echarts from 'echarts'
 

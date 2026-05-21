@@ -118,7 +118,7 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped name="screen-sex">
 .sex-box {
     width: 100%;
     height: 100%;

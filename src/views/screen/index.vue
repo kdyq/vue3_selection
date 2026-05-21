@@ -134,8 +134,10 @@ onUnmounted(() => {
             }
 
             .right {
-                flex: 1; // 右侧变窄，中间地图变宽
+                flex: 1;
                 height: 1040px;
+                display: flex;
+                flex-direction: column;
                 position: relative;
                 z-index: 20;
             }

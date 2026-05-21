@@ -9,7 +9,7 @@
 
 </template>
 
-<script setup lang="ts" name="screen-tourist">
+<script setup lang="ts" name="screen-age">
 import { onMounted, ref } from 'vue'
 import * as echarts from 'echarts'
 const pie = ref()

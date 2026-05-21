@@ -16,7 +16,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="screen-map">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import * as echarts from 'echarts'
 import chinaJson from './China.json'
