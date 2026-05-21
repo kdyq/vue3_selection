@@ -7,17 +7,21 @@
             <div class="bottom">
                 <div class="left">
                     <!-- 游客组件 -->
-                    <Tourist class="tourist"></Tourist>
+                    <Tourist></Tourist>
                     <!-- 性别组件 -->
-                    <Sex class="sex"></Sex>
+                    <Sex ></Sex>
                     <!-- 年龄组件 -->
-                    <Age class="age"></Age>
+                    <Age ></Age>
                 </div>
                 <div class="content">
                     <Map class="map"></Map>
                     <Line class="line" />
                 </div>
-                <div class="right">右侧</div>
+                <div class="right">
+                    <Rank class="rank"></Rank>
+                    <Year class="year"></Year>
+                    <Counter class="counter"></Counter>
+                </div>
             </div>
         </div>
     </div>
@@ -31,6 +35,9 @@ import Sex from './components/left/sex/index.vue'
 import Age from './components/left/age/index.vue'
 import Map from './components/center/map/index.vue'
 import Line from './components/center/line/index.vue'
+import Rank from './components/right/rank/index.vue'
+import Year from './components/right/year/index.vue'
+import Counter from './components/right/counter/index.vue'
 const screen = ref()
 let timer: ReturnType<typeof setTimeout> | null = null
 

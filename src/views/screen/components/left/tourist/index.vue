@@ -133,11 +133,11 @@ onMounted(() => {
 
     .top {
         margin-left: 20px;
+        
 
         .title {
             color: white;
             font-size: 20px;
-
         }
 
         .bg {
@@ -150,7 +150,7 @@ onMounted(() => {
 
         .num {
             color: white;
-            font-size: 17px;
+            font-size: 15px;
             float: right;
 
             span {
@@ -160,7 +160,7 @@ onMounted(() => {
     }
 
     .people {
-        margin-top: 30px;
+        margin-top: 10px;
         display: flex;
         justify-content: center; // 整体居中
         align-items: center;
@@ -170,7 +170,7 @@ onMounted(() => {
         padding-top: 18px;
 
         span {
-            flex: 0 0 60px; // 固定宽度
+            // flex: 0 0 60px; // 固定宽度
             width: 60px;
             height: 60px;
             line-height: 60px;
