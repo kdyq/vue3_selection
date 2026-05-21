@@ -11,7 +11,6 @@
 <script setup lang="ts" name="screen-year">
 import { ref, onMounted } from 'vue';
 import * as echarts from 'echarts';
-import { shouldShowAllLabels } from 'echarts/types/src/coord/axisHelper.js';
 const year_line = ref();
 onMounted(() => {
     const myChart = echarts.init(year_line.value);
@@ -167,8 +166,8 @@ onMounted(() => {
 <style scoped lang="scss">
 .screen-year {
     width: 100%;
-    height: 298px;
-    background: url(../../../images/dataScreen-main-lc.png) no-repeat;
+    height: 330px;
+    background: url(../../../images/dataScreen-main-rc.png) no-repeat;
     background-size: 100% 100%;
     margin: 25px 0;
 

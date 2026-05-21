@@ -79,10 +79,9 @@ const rankList = [
 .screen-rank {
     width: 100%;
     height: 400px;
-    background: url(../../../images/dataScreen-main-lb.png) no-repeat;
+    background: url(../../../images/dataScreen-main-rt.png) no-repeat;
     background-size: 100% 100%;
     margin-top: 10px;
-    padding-top: 8px;
     box-sizing: border-box;
 
     .top {
@@ -106,7 +105,7 @@ const rankList = [
 
     .rank-content {
         width: calc(100% - 44px);
-        margin: 60px auto 0;
+        margin: 30px auto;
     }
 
     .rank-header {

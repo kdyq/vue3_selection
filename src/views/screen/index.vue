@@ -99,10 +99,12 @@ onUnmounted(() => {
 
         .bottom {
             display: flex;
+            gap: 20px;
             width: 100%;
             height: 1040px;
             position: relative;
             overflow: hidden;
+            box-sizing: border-box;
 
             .left {
                 flex: 1;

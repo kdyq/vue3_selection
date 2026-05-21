@@ -127,7 +127,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .screen-tourist {
-    background: url(../../../images/dataScreen-main-lb.png) no-repeat;
+    background: url(../../../images/dataScreen-main-lt.png) no-repeat;
     background-size: 100% 100%;
     margin-top: 10px;
 
