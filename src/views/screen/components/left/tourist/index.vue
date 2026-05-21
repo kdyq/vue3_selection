@@ -190,7 +190,7 @@ onMounted(() => {
     .water_ball {
         width: 100%;
         height: 250px;
-        margin-top: 28px;
+        margin-top: 15px;
     }
 }
 </style>
