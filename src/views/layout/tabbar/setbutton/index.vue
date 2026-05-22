@@ -9,12 +9,12 @@
     <el-popover placement="bottom" title="主题设置" :width="300" trigger="click">
         <!-- 表单元素 -->
         <el-form label-width="80px">
-            <el-form-item label="主题颜色">
-                <el-color-picker @change="setColor" v-model="color" size="small" show-alpha :predefine="predefineColors"
-                    :teleported="false" />
+            <el-form-item label="主题颜色" label-for="theme-color">
+                <el-color-picker id="theme-color" @change="setColor" v-model="color" size="small" show-alpha
+                    :predefine="predefineColors" :teleported="false" />
             </el-form-item>
-            <el-form-item label="暗黑模式">
-                <el-switch @change="changeDark" v-model="dark" size="default" active-icon="MoonNight"
+            <el-form-item label="暗黑模式" label-for="dark-mode">
+                <el-switch @change="changeDark" v-model="dark" id="dark-mode" size="default" active-icon="MoonNight"
                     inactive-icon="Sunny" inline-prompt />
             </el-form-item>
         </el-form>

@@ -7,8 +7,23 @@ import type {
 } from '@/api/user/type'
 import { reqLogin, reqUserInfo, reqLogout } from '@/api/user'
 import { ref } from 'vue'
-import { constantRoute } from '@/router/routers'
+import { constantRoute, asyncRoute, anyRoute } from '@/router/routers'
 import type { UserState } from './types/type'
+import router from '@/router'
+//引入深拷贝
+import { cloneDeep } from 'lodash-es'
+//用于过滤当前用户需要展示的异步路由
+function filterAsyncRoute(asyncRoute: any, routes: any) {
+  return asyncRoute.filter((item: any) => {
+    if (routes.includes(item.name)) {
+      //有孩子
+      if (item.children && item.children.length > 0) {
+        item.children = filterAsyncRoute(item.children, routes)
+      }
+      return true
+    }
+  })
+}
 export const useUserStore = defineStore(
   'User',
   (): UserState => {
@@ -33,6 +48,18 @@ export const useUserStore = defineStore(
       if (result.code == 200) {
         username.value = result.data.name
         avatar.value = result.data.avatar
+        //过滤路由
+        const userAsyncRoute = filterAsyncRoute(
+          cloneDeep(asyncRoute),
+          result.data.routes,
+        )
+        //菜单的数据
+        menuRoute.value = [...constantRoute, ...userAsyncRoute, anyRoute]
+        //追加到路由器管理
+        const routes = [...userAsyncRoute, anyRoute]
+        routes.forEach((route: any) => {
+          router.addRoute(route)
+        })
         return result
       } else {
         return Promise.reject(new Error(result.message))

@@ -48,6 +48,20 @@ export const constantRoute: RouteRecordRaw[] = [
       icon: 'DataAnalysis',
     },
   },
+  //404页
+  {
+    path: '/404',
+    component: () => import('@/views/404/index.vue'),
+    name: '404',
+    meta: {
+      title: '404',
+      hidden: true,
+      icon: 'HomeFilled',
+    },
+  },
+]
+// 对外暴露异步路由
+export const asyncRoute: RouteRecordRaw[] = [
   //权限管理
   {
     path: '/acl',
@@ -153,26 +167,16 @@ export const constantRoute: RouteRecordRaw[] = [
       },
     ],
   },
-  //404页
-  {
-    path: '/404',
-    component: () => import('@/views/404/index.vue'),
-    name: '404',
-    meta: {
-      title: '404',
-      hidden: true,
-      icon: 'HomeFilled',
-    },
-  },
-  //任意
-  {
-    path: '/:pathMatch(.*)',
-    redirect: '/404',
-    name: 'Any',
-    meta: {
-      title: '任意路由',
-      hidden: true,
-      icon: 'HomeFilled',
-    },
-  },
 ]
+//对外暴露任意路由
+export const anyRoute: RouteRecordRaw = {
+  //任意
+  path: '/:pathMatch(.*)',
+  redirect: '/404',
+  name: 'Any',
+  meta: {
+    title: '任意路由',
+    hidden: true,
+    icon: 'HomeFilled',
+  },
+}

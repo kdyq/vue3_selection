@@ -17,4 +17,4 @@ declare interface ImportMeta {
 }
 declare module 'nprogress'
 declare module 'echarts-liquidfill'
-declare module 'echarts-liquidfill/dist/echarts-liquidfill.js'
+declare module 'lodash/cloneDeep'

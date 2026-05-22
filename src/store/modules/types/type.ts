@@ -8,5 +8,5 @@ export interface UserState {
   avatar: Ref<string>
   userLogin: (data: loginFormData) => Promise<string>
   userInfo: () => Promise<userInfoResponseData>
-  userLogout: () => void
+  userLogout: () => Promise<string>
 }
