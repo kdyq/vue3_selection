@@ -6,7 +6,7 @@
             <div v-show="scene == 0">
                 <div>
                     <el-button type="primary" size="default" icon="Plus" :disabled="categoryStore.c3Id ? false : true"
-                        @click="addSpu">添加SPU</el-button>
+                        @click="addSpu" v-has="`btn.Spu.add`">添加SPU</el-button>
                     <el-table border style="margin: 10px 0;" :data="records">
                         <el-table-column label="序号" type="index" align="center" width="80px">
                         </el-table-column>
@@ -17,14 +17,14 @@
                         <el-table-column label="操作" width="250px">
                             <template v-slot="{ row }">
                                 <el-button type="primary" size="default" icon="Plus" title="添加SKU"
-                                    @click="addSku(row)"></el-button>
+                                    @click="addSku(row)" v-has="`btn.Spu.addsku`"></el-button>
                                 <el-button type="warning" size="default" icon="Edit" title="修改SPU"
-                                    @click="updateSpu(row)"></el-button>
+                                    @click="updateSpu(row)" v-has="`btn.Spu.update`"></el-button>
                                 <el-button type="info" size="default" icon="View" title="查看SKU列表"
-                                    @click="viewSku(row)"></el-button>
+                                    @click="viewSku(row)" v-has="`btn.Spu.skus`"></el-button>
                                 <el-popconfirm :title="`你确定删除${row.spuName}吗`" width="auto" @confirm="deleteSpu(row)">
                                     <template #reference>
-                                        <el-button type="danger" size="default" icon="Delete" title="删除SPU"></el-button>
+                                        <el-button type="danger" size="default" icon="Delete" title="删除SPU" v-has="`btn.Spu.delete`"></el-button>
                                     </template>
                                 </el-popconfirm>
                             </template>

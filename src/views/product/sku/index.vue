@@ -20,12 +20,15 @@
                 <template v-slot="{ row }">
                     <el-button :type="row.isSale == 1 ? 'info' : 'primary'" size="default"
                         :icon="row.isSale == 1 ? 'Bottom' : 'Top'" :title="row.isSale == 1 ? '下架' : '上架'"
-                        @click="changeSale(row)"></el-button>
-                    <el-button type="warning" size="default" icon="Edit" title="更新" @click="updateSku"></el-button>
-                    <el-button type="success" size="default" icon="View" title="查看" @click="viewSku(row)"></el-button>
+                        @click="changeSale(row)" v-has="`btn.Sku.updown`"></el-button>
+                    <el-button type="warning" size="default" icon="Edit" title="更新" @click="updateSku"
+                        v-has="`btn.Sku.update`"></el-button>
+                    <el-button type="success" size="default" icon="View" title="查看" @click="viewSku(row)"
+                        v-has="`btn.Sku.detail`"></el-button>
                     <el-popconfirm :title="`你确定删除 ${row.skuName} 吗`" width="auto" @confirm="deleteSku(row)">
                         <template #reference>
-                            <el-button type="danger" size="default" icon="Delete" title="删除"></el-button>
+                            <el-button type="danger" size="default" icon="Delete" title="删除"
+                                v-has="`btn.Sku.delete`"></el-button>
                         </template>
                     </el-popconfirm>
 

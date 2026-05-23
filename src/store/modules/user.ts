@@ -42,12 +42,16 @@ export const useUserStore = defineStore(
     }
     const username = ref('')
     const avatar = ref('')
+    //存储按钮表示标识
+    const buttons = ref()
     //获取用户信息
     const userInfo = async () => {
       const result: userInfoResponseData = await reqUserInfo()
+      console.log(result)
       if (result.code == 200) {
         username.value = result.data.name
         avatar.value = result.data.avatar
+        buttons.value = result.data.buttons
         //过滤路由
         const userAsyncRoute = filterAsyncRoute(
           cloneDeep(asyncRoute),
@@ -90,6 +94,7 @@ export const useUserStore = defineStore(
       menuRoute,
       username,
       avatar,
+      buttons,
     }
   },
   //持久化存储

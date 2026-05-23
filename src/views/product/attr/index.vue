@@ -5,7 +5,7 @@
         <el-card style="margin: 10px 0;">
             <div v-show="scene == 0">
                 <el-button type="primary" size="default" icon="Plus" :disabled="categoryStore.c3Id ? false : true"
-                    @click="addAttr">添加属性</el-button>
+                    @click="addAttr" v-has="`btn.Attr.add`">添加属性</el-button>
                 <el-table border style="margin: 10px 0;" :data="attrArr">
                     <el-table-column label="序号" type="index" align="center" width="80px">
                     </el-table-column>
@@ -22,12 +22,12 @@
                         <template v-slot="{ row }">
                             <el-tooltip content="编辑" placement="top">
                                 <el-button type="warning" size="default" icon="Edit"
-                                    @click="changeAttr(row)"></el-button>
+                                    @click="changeAttr(row)" v-has="`btn.Attr.update`"></el-button>
                             </el-tooltip>
                             <el-popconfirm :title="`确定删除 ${row.attrName} 吗？`" width="auto"
                                 @confirm="deleteAttr(row.id)">
                                 <template #reference>
-                                    <el-button type="danger" icon="Delete" title="删除"></el-button>
+                                    <el-button type="danger" icon="Delete" title="删除" v-has="`btn.Attr.remove`"></el-button>
                                 </template>
                             </el-popconfirm>
                         </template>

@@ -6,6 +6,7 @@ export interface UserState {
   menuRoute: Ref<RouteRecordRaw[]>
   username: Ref<string>
   avatar: Ref<string>
+  buttons: Ref<string[]>
   userLogin: (data: loginFormData) => Promise<string>
   userInfo: () => Promise<userInfoResponseData>
   userLogout: () => Promise<string>

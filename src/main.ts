@@ -17,6 +17,8 @@ import router from '@/router'
 import pinia from './store'
 //引入路由鉴权
 import './permission'
+//引入自定义指令
+import { isHasButton } from './directive/has'
 const app = createApp(App)
 //加载以及设置中文
 app.use(ElementPlus, {
@@ -28,5 +30,6 @@ app.use(globalComponents)
 app.use(router)
 //使用仓库
 app.use(pinia)
+isHasButton(app)
 app.mount('#app')
 // console.log(import.meta.env);

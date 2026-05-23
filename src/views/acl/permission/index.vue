@@ -7,18 +7,18 @@
             <el-table-column label="操作">
                 <template v-slot="{ row }">
                     <el-button type="primary" size="small" icon="User" :disabled="row.level === 4 ? true : false"
-                        @click="addPermission(row)">
+                        @click="addPermission(row)" v-has="`btn.Permission.add`">
                         {{ row.level === 3 ? '添加功能' : '添加菜单' }}
                     </el-button>
                     <el-button type="warning" size="small" icon="Edit" :disabled="row.level === 1 ? true : false"
-                        @click="editPermission(row)">
+                        @click="editPermission(row)" v-has="`btn.Permission.update`">
                         编辑
                     </el-button>
                     <el-popconfirm :title="`确定删除这个${row.level === 4 ? '功能' : '菜单'} 吗`" width="260px"
                         @confirm="removeMenu(row.id)">
                         <template #reference>
                             <el-button type="danger" size="small" icon="Delete"
-                                :disabled="row.level === 1 ? true : false">删除</el-button>
+                                :disabled="row.level === 1 ? true : false" v-has="`btn.Permission.remove`">删除</el-button>
                         </template>
                     </el-popconfirm>
                 </template>

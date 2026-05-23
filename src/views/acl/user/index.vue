@@ -13,9 +13,9 @@
             </el-form>
         </el-card>
         <el-card style="margin-top: 10px;">
-            <el-button type="primary" size="default" @click="addUser">添加</el-button>
+            <el-button type="primary" size="default" @click="addUser" v-has="`btn.User.add`">添加</el-button>
             <el-button type="danger" size="default" :disabled="selectedArr.length > 0 ? false : true"
-                @click="removeBatchUser">批量删除</el-button>
+                @click="removeBatchUser" v-has="`btn.User.remove`">批量删除</el-button>
             <!-- table展示用户信息 -->
             <el-table @selection-change="selectChange" style="margin: 10px 0px" border :data="userArr">
                 <el-table-column type="selection" align="center"></el-table-column>
@@ -28,15 +28,17 @@
                 <el-table-column label="更新时间" align="center" show-overflow-tooltip prop="updateTime"></el-table-column>
                 <el-table-column label="操作" width="300px" align="center">
                     <template v-slot="{ row }">
-                        <el-button type="primary" size="small" icon="User" @click="assignRole(row)">
+                        <el-button type="primary" size="small" icon="User" @click="assignRole(row)"
+                            v-has="`btn.User.assgin`">
                             分配职位
                         </el-button>
-                        <el-button type="warning" size="small" icon="Edit" @click="editUser(row)">
+                        <el-button type="warning" size="small" icon="Edit" @click="editUser(row)"
+                            v-has="`btn.User.update`">
                             编辑
                         </el-button>
                         <el-popconfirm :title="`确定删除这个用户吗？`" width="260px" @confirm="removeUser(row.id)">
                             <template #reference>
-                                <el-button type="danger" size="small" icon="Delete">删除</el-button>
+                                <el-button type="danger" size="small" icon="Delete" v-has="`btn.User.remove`">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>

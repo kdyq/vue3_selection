@@ -13,7 +13,7 @@
             </el-form>
         </el-card>
         <el-card style="margin: 10px 0px">
-            <el-button type="primary" size="default" icon="Plus" @click="addRole">添加职位</el-button>
+            <el-button type="primary" size="default" icon="Plus" @click="addRole" v-has="`btn.Role.add`">添加职位</el-button>
             <el-table border style="margin: 10px 0px" :data="allRole">
                 <el-table-column type="index" align="center" label="#"></el-table-column>
                 <el-table-column align="center" label="id" prop="id"></el-table-column>
@@ -23,15 +23,15 @@
                 <el-table-column align="center" label="操作" width="300px">
                     <!-- row：已有的职位对象 -->
                     <template v-slot="{ row }">
-                        <el-button type="primary" size="small" icon="User" @click="setPermission(row)">
+                        <el-button type="primary" size="small" icon="User" @click="setPermission(row)" v-has="`btn.Role.assgin`">
                             分配权限
                         </el-button>
-                        <el-button type="warning" size="small" icon="Edit" @click="EditRole(row)">
+                        <el-button type="warning" size="small" icon="Edit" @click="EditRole(row)" v-has="`btn.Role.update`">
                             编辑
                         </el-button>
                         <el-popconfirm title="确定删除这个职位吗" width="260px" @confirm="removeRole(row.id)">
                             <template #reference>
-                                <el-button type="danger" size="small" icon="Delete">删除</el-button>
+                                <el-button type="danger" size="small" icon="Delete" v-has="`btn.Role.remove`">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
