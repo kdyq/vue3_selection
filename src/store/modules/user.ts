@@ -12,6 +12,7 @@ import type { UserState } from './types/type'
 import router from '@/router'
 //引入深拷贝
 import { cloneDeep } from 'lodash-es'
+const TOKEN_KEY = 'token'
 //用于过滤当前用户需要展示的异步路由
 function filterAsyncRoute(asyncRoute: any, routes: any) {
   return asyncRoute.filter((item: any) => {
@@ -27,7 +28,7 @@ function filterAsyncRoute(asyncRoute: any, routes: any) {
 export const useUserStore = defineStore(
   'User',
   (): UserState => {
-    const token = ref('')
+    const token = ref(localStorage.getItem(TOKEN_KEY) || '')
     const menuRoute = ref(constantRoute) //存储生成菜单
     //登录
     const userLogin = async (data: loginFormData) => {
@@ -35,6 +36,8 @@ export const useUserStore = defineStore(
       // console.log(result);
       if (result.code == 200) {
         token.value = result.data as string
+        // 手动持久化 token
+        localStorage.setItem(TOKEN_KEY, token.value)
         return 'ok'
       } else {
         throw new Error(result.data)
@@ -80,7 +83,7 @@ export const useUserStore = defineStore(
         // 重置菜单
         menuRoute.value = constantRoute
         // 清空本地存储
-        localStorage.removeItem('token')
+        localStorage.removeItem(TOKEN_KEY)
         return 'ok'
       } else {
         return Promise.reject(new Error(result.message))
@@ -97,16 +100,5 @@ export const useUserStore = defineStore(
       buttons,
     }
   },
-  //持久化存储
-  {
-    persist: {
-      key: 'token',
-      storage: localStorage,
-      paths: ['token'],
-      serializer: {
-        serialize: (state) => state.token,
-        deserialize: (value) => ({ token: value }),
-      },
-    },
-  },
+
 )

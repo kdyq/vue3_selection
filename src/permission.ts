@@ -42,7 +42,7 @@ router.beforeEach(async (to, from, next) => {
         try {
           await userStore.userInfo()
           //等待路由组件渲染完毕
-          next({...to})
+          next({ ...to, replace: true })
         } catch (error) {
           //token失效
           ElMessage({
