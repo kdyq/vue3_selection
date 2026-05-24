@@ -2,7 +2,7 @@
     <div>
         <el-card>
             <div class="box">
-                <img :src="userStore.avatar ? userStore.avatar : '../../../public/touxiang.png'" class="avatar">
+                <img :src="userStore.avatar ? userStore.avatar : 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif" class="avatar">
                 <div>
                     <h3 class="title">{{ userStore.username }} {{ getTime() }}好!</h3>
                     <p class="sub-title">硅谷甄选运营平台</p>
