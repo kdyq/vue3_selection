@@ -23,7 +23,7 @@
             <el-button size="default" icon="Setting" circle title="设置"></el-button>
         </template>
     </el-popover>
-    <img :src="userStore.avatar ? userStore.avatar : '../../../../../public/touxiang.png'"
+    <img :src="userStore.avatar ? userStore.avatar : 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'"
         style="width: 32px; height: 32px; margin: 0 10px; border-radius: 50%;">
     <!-- 下拉菜单 -->
     <el-dropdown>
